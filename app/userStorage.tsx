@@ -1,0 +1,95 @@
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useRouter } from "expo-router";
+import React, { useEffect, useState } from "react";
+import {
+  Keyboard,
+  KeyboardAvoidingView,
+  Platform,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableWithoutFeedback,
+  View,
+} from "react-native";
+
+const userStorage = () => {
+  const [name, setName] = useState("");
+  const [year, setYear] = useState("");
+  const [month, setMonth] = useState("");
+  const [day, setDay] = useState("");
+  const [weight, setWeight] = useState("");
+
+  const router = useRouter();
+
+  useEffect(() => {
+    const saveData = async () => {
+      const isCompleted = name && year && month && day && weight;
+      if (!isCompleted) return;
+
+      const data = { name, birthday: { year, month, day }, weight };
+      await AsyncStorage.setItem("users", JSON.stringify(data));
+
+      router.replace("/home");
+    };
+    saveData();
+  }, [name, year, month, day, weight]);
+
+  return (
+    <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+      <KeyboardAvoidingView
+        style={styles.container}
+        behavior={Platform.OS === "ios" ? "padding" : "height"}
+      >
+        <ScrollView keyboardShouldPersistTaps="handled">
+          <Text style={styles.inputText}>Name</Text>
+          <TextInput
+            placeholder="Put your name here..."
+            onChangeText={setName}
+            style={styles.input}
+          />
+          <Text style={styles.inputText}>Birthday</Text>
+          <View>
+            <Text>Month</Text>
+            <TextInput onChangeText={setMonth} placeholder="Month" />
+            <Text>Day</Text>
+            <TextInput onChangeText={setDay} placeholder="Day" />
+            <Text>Year</Text>
+            <TextInput onChangeText={setYear} placeholder="Year" />
+          </View>
+          <Text style={styles.inputText}>Weight (Kg)</Text>
+          <TextInput
+            onChangeText={setWeight}
+            keyboardType="numeric"
+            placeholder="Enter your weight"
+            style={styles.input}
+          />
+        </ScrollView>
+      </KeyboardAvoidingView>
+    </TouchableWithoutFeedback>
+  );
+};
+
+export default userStorage;
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  inputText: {
+    textAlign: "left",
+    fontSize: 18,
+    fontWeight: "bold",
+  },
+  input: {
+    width: "80%",
+    borderWidth: 1,
+    borderColor: "#000",
+    borderRadius: 5,
+    padding: 10,
+    marginBottom: 10,
+    backgroundColor: "#fff",
+  },
+});
