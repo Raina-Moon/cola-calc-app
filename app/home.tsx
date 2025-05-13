@@ -1,5 +1,7 @@
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
+  Animated,
+  Dimensions,
   Image,
   ScrollView,
   StyleSheet,
@@ -9,26 +11,62 @@ import {
 } from "react-native";
 
 type FilterType = "original" | "zero";
+const { width } = Dimensions.get("window");
 
 const home = () => {
   const [filter, setFilter] = useState<FilterType>("original");
+  const [sum, setSum] = useState(0);
+  const fillAnim = useRef(new Animated.Value(0)).current;
 
-  const colaImages: Record<FilterType, any[]> = {
+  useEffect(() => {
+    Animated.timing(fillAnim, {
+      toValue: 1,
+      duration: 3000,
+      useNativeDriver: true,
+    }).start();
+  }, []);
+
+  const colaImages: Record<FilterType, { image: any; ml: number }[]> = {
     original: [
-      require(`../assets/images/colasmallcan.png`),
-      require(`../assets/images/colabigcan.png`),
-      require(`../assets/images/colabottle.png`),
-      require(`../assets/images/colaglass.png`),
+      { image: require(`../assets/images/colasmallcan.png`), ml: 250 },
+      { image: require(`../assets/images/colabigcan.png`), ml: 355 },
+      { image: require(`../assets/images/colabottle.png`), ml: 355 },
+      { image: require(`../assets/images/colaglass.png`), ml: 200 },
     ],
     zero: [
-      require(`../assets/images/zerosmallcan.png`),
-      require(`../assets/images/zerobigcan.png`),
-      require(`../assets/images/zerobottle.png`),
-      require(`../assets/images/zeroglasscup.png`),
+      { image: require(`../assets/images/zerosmallcan.png`), ml: 250 },
+      { image: require(`../assets/images/zerobigcan.png`), ml: 355 },
+      { image: require(`../assets/images/zerobottle.png`), ml: 500 },
+      { image: require(`../assets/images/zeroglasscup.png`), ml: 200 },
     ],
   };
+
+  const handleSum = (value: number) => {
+    setSum((num) => num + value);
+  };
+
   return (
     <ScrollView contentContainerStyle={styles.container}>
+      <View>
+        <Text>You Drank {sum} ml of Cola Today!</Text>
+        <View style={styles.barContainer}>
+          <Animated.View style={styles.filledBar}>
+            {Array.from({ length: 10 }).map((_, idx) => (
+              <Animated.View
+                key={idx}
+                style={[
+                  styles.bubble,
+                  {
+                    left: Math.random() * 200,
+                    bottom: Math.random() * 20,
+                    opacity: 0.3 + Math.random() * 0.7,
+                  },
+                ]}
+              />
+            ))}
+          </Animated.View>
+        </View>
+      </View>
       <View style={styles.filterContainer}>
         <TouchableOpacity
           onPress={() => setFilter("original")}
@@ -45,9 +83,13 @@ const home = () => {
       </View>
 
       <View style={styles.buttonContainer}>
-        {colaImages[filter].map((img, idx) => (
-          <TouchableOpacity key={idx} style={styles.button}>
-            <Image source={img} style={styles.image} />
+        {colaImages[filter].map((item, idx) => (
+          <TouchableOpacity
+            key={idx}
+            style={styles.button}
+            onPress={() => handleSum(item.ml)}
+          >
+            <Image source={item.image} style={styles.image} />
           </TouchableOpacity>
         ))}
       </View>
@@ -96,5 +138,27 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: "bold",
     color: "#fff",
+  },
+  barContainer: {
+    width: "80%",
+    height: 40,
+    borderWidth: 2,
+    borderColor: "#000",
+    borderRadius: 20,
+    overflow: "hidden",
+    backgroundColor: "#fff",
+  },
+  filledBar: {
+    height: "100%",
+    backgroundColor: "#b02828",
+    position: "absolute",
+    flexDirection: "row",
+  },
+  bubble: {
+    width: 8,
+    height: 8,
+    backgroundColor: "white",
+    borderRadius: 4,
+    position: "absolute",
   },
 });
