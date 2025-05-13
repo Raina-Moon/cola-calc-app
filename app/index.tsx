@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { Animated, Dimensions, Image, StyleSheet, View } from "react-native";
 import * as SplashScreen from "expo-splash-screen";
 import { useRouter } from "expo-router";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const { width } = Dimensions.get("window");
 
@@ -30,9 +31,15 @@ export default function Index() {
         await SplashScreen.hideAsync();
         setReady(true);
 
+        const userData = await AsyncStorage.getItem("users");
+
         setTimeout(() => {
-          router.replace("/home")
-        },1000)
+          if (userData) {
+            router.replace("/home");
+          } else {
+            router.replace("/userStorage");
+          }
+        }, 1000);
       });
     };
     startAnimation();
