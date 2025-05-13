@@ -91,6 +91,8 @@ const home = () => {
           </TouchableOpacity>
         ))}
       </View>
+
+      <Image source={require(`../assets/images/colafairy.png`)} />
     </ScrollView>
   );
 };
