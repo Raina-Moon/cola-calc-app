@@ -18,13 +18,15 @@ const home = () => {
   const [sum, setSum] = useState(0);
   const fillAnim = useRef(new Animated.Value(0)).current;
 
+  const max = 2000;
+
   useEffect(() => {
     Animated.timing(fillAnim, {
-      toValue: 1,
-      duration: 3000,
-      useNativeDriver: true,
+      toValue: sum / max,
+      duration: 500,
+      useNativeDriver: false,
     }).start();
-  }, []);
+  }, [sum]);
 
   const colaImages: Record<FilterType, { image: any; ml: number }[]> = {
     original: [
@@ -50,21 +52,17 @@ const home = () => {
       <View>
         <Text>You Drank {sum} ml of Cola Today!</Text>
         <View style={styles.barContainer}>
-          <Animated.View style={styles.filledBar}>
-            {Array.from({ length: 10 }).map((_, idx) => (
-              <Animated.View
-                key={idx}
-                style={[
-                  styles.bubble,
-                  {
-                    left: Math.random() * 200,
-                    bottom: Math.random() * 20,
-                    opacity: 0.3 + Math.random() * 0.7,
-                  },
-                ]}
-              />
-            ))}
-          </Animated.View>
+          <Animated.View
+            style={[
+              styles.filledBar,
+              {
+                width: fillAnim.interpolate({
+                  inputRange: [0, 1],
+                  outputRange: [0, width * 0.8],
+                }),
+              },
+            ]}
+          ></Animated.View>
         </View>
       </View>
       <View style={styles.filterContainer}>
