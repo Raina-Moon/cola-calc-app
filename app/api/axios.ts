@@ -2,7 +2,7 @@ import axios from "axios";
 import { useAuthStore } from "../store/authStore";
 import { refreshAccessToken } from "./auth";
 
-const API = axios.create({ baseURL: "http://54.161.66.184/5000/api" });
+const API = axios.create({ baseURL: process.env.API_URL });
 
 API.interceptors.request.use(
   async (config) => {
