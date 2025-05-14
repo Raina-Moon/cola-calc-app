@@ -10,28 +10,37 @@ interface User {
 
 interface AuthState {
   user: User | null;
-  token: string | null;
-  login: (user: User, token: string) => Promise<void>;
+  accessToken: string | null;
+  refreshToken: string | null;
+  login: (
+    user: User,
+    accessToken: string,
+    refreshToken: string
+  ) => Promise<void>;
   logout: () => Promise<void>;
   loadFromStorage: () => Promise<void>;
 }
 
 export const useAuthStore = create<AuthState>((set) => ({
   user: null,
-  token: null,
-  login: async (user, token) => {
+  accessToken: null,
+  refreshToken: null,
+
+  login: async (user, accessToken, refreshToken) => {
     await AsyncStorage.setItem("user", JSON.stringify(user));
-    await AsyncStorage.setItem("token", token);
-    set({ user, token });
+    await AsyncStorage.setItem("accessToken", accessToken);
+    await AsyncStorage.setItem("refreshToken", refreshToken);
+    set({ user, accessToken, refreshToken });
   },
   logout: async () => {
-    await AsyncStorage.removeItem("user");
-    await AsyncStorage.removeItem("token");
-    set({ user: null, token: null });
+    await AsyncStorage.multiRemove(["user", "accessToken", "refreshToken"]);
+    set({ user: null, accessToken: null, refreshToken: null });
   },
   loadFromStorage: async () => {
     const user = await AsyncStorage.getItem("user");
-    const token = await AsyncStorage.getItem("token");
-    if (user && token) return set({ user: JSON.parse(user), token });
+    const accessToken = await AsyncStorage.getItem("accessToken");
+    const refreshToken = await AsyncStorage.getItem("refreshToken");
+    if (user && accessToken && refreshToken)
+      return set({ user: JSON.parse(user), accessToken, refreshToken });
   },
 }));
