@@ -1,25 +1,16 @@
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import axios from "axios";
 import { useAuthStore } from "../store/authStore";
-
-const API_URL = "http://54.161.66.184/5000/api";
+import API from "./axios";
 
 export const register = async (
   name: string,
   birthday: string,
   weight: number
 ) => {
-  const res = await axios.post(
-    `${API_URL}/user`,
-    {
-      name,
-      birthday,
-      weight,
-    },
-    {
-      headers: { "Content-Type": "application/json" },
-    }
-  );
+  const res = await API.post("/user", {
+    name,
+    birthday,
+    weight,
+  });
 
   if (res.status !== 201) {
     throw new Error("Failed to register");
@@ -29,7 +20,7 @@ export const register = async (
 };
 
 export const login = async (name: string, birthday: string) => {
-  const res = await axios.post(`${API_URL}/auth/login`, {
+  const res = await API.post("/auth/login", {
     name,
     birthday,
   });
@@ -48,7 +39,7 @@ export const refreshAccessToken = async () => {
   if (!refreshtoken) throw new Error("No refresh token found");
 
   try {
-    const res = await axios.post(`${API_URL}/auth/refresh`, {
+    const res = await API.post("/auth/refresh", {
       refreshtoken: refreshtoken,
     });
 
