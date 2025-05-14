@@ -9,11 +9,12 @@ import {
   StyleSheet,
   Text,
   TextInput,
+  TouchableOpacity,
   TouchableWithoutFeedback,
   View,
 } from "react-native";
 
-const userStorage = () => {
+export default function Signup() {
   const [name, setName] = useState("");
   const [year, setYear] = useState("");
   const [month, setMonth] = useState("");
@@ -64,13 +65,15 @@ const userStorage = () => {
             placeholder="Enter your weight"
             style={styles.input}
           />
+
+          <TouchableOpacity onPress={() => router.replace("/login")}>
+            <Text>Already Have Account?</Text>
+          </TouchableOpacity>
         </ScrollView>
       </KeyboardAvoidingView>
     </TouchableWithoutFeedback>
   );
 };
-
-export default userStorage;
 
 const styles = StyleSheet.create({
   container: {
