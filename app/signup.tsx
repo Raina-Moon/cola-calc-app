@@ -1,6 +1,5 @@
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useRouter } from "expo-router";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import {
   Keyboard,
   KeyboardAvoidingView,
@@ -9,31 +8,45 @@ import {
   StyleSheet,
   Text,
   TextInput,
+  TouchableOpacity,
   TouchableWithoutFeedback,
   View,
 } from "react-native";
+import { login, register } from "./api/auth";
 
-const userStorage = () => {
+export default function Signup() {
   const [name, setName] = useState("");
   const [year, setYear] = useState("");
   const [month, setMonth] = useState("");
   const [day, setDay] = useState("");
   const [weight, setWeight] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
 
   const router = useRouter();
 
-  useEffect(() => {
-    const saveData = async () => {
-      const isCompleted = name && year && month && day && weight;
-      if (!isCompleted) return;
+  const handleSignup = async () => {
+    setErrorMessage("");
+    const iscompleted = name && year && month && day && weight;
+    if (!iscompleted) return;
 
-      const data = { name, birthday: { year, month, day }, weight };
-      await AsyncStorage.setItem("users", JSON.stringify(data));
+    const birthday = `${year}-${month.padStart(2, "0")}-${day.padStart(
+      2,
+      "0"
+    )}`;
 
+    try {
+      await register(name, birthday, Number(weight));
+      await login(name, birthday);
       router.replace("/home");
-    };
-    saveData();
-  }, [name, year, month, day, weight]);
+    } catch (error: any) {
+      console.error(error);
+      if (error.response?.status === 409) {
+        setErrorMessage("User already exists. Please try again.");
+      } else {
+        setErrorMessage("An error occurred. Please try again.");
+      }
+    }
+  };
 
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
@@ -64,13 +77,19 @@ const userStorage = () => {
             placeholder="Enter your weight"
             style={styles.input}
           />
+          <TouchableOpacity onPress={handleSignup}>
+            <Text>Sign Up</Text>
+          </TouchableOpacity>
+
+          {errorMessage ? <Text>{errorMessage}</Text> : null}
+          <TouchableOpacity onPress={() => router.replace("/login")}>
+            <Text>Already Have Account?</Text>
+          </TouchableOpacity>
         </ScrollView>
       </KeyboardAvoidingView>
     </TouchableWithoutFeedback>
   );
-};
-
-export default userStorage;
+}
 
 const styles = StyleSheet.create({
   container: {

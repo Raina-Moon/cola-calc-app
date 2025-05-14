@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { Animated, Dimensions, Image, StyleSheet, View } from "react-native";
 import * as SplashScreen from "expo-splash-screen";
 import { useRouter } from "expo-router";
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useAuthStore } from "./store/authStore";
 
 const { width } = Dimensions.get("window");
 
@@ -21,8 +21,12 @@ export default function Index() {
   const bubbleId = useRef(0);
   const router = useRouter();
 
+  const loadFromStorage = useAuthStore((state) => state.loadFromStorage)
+
   useEffect(() => {
     const startAnimation = async () => {
+      const userLoad = await loadFromStorage()
+
       Animated.timing(scaleAnim, {
         toValue: 1,
         duration: 800,
@@ -31,13 +35,12 @@ export default function Index() {
         await SplashScreen.hideAsync();
         setReady(true);
 
-        const userData = await AsyncStorage.getItem("users");
 
         setTimeout(() => {
-          if (userData) {
+          if (userLoad) {
             router.replace("/home");
           } else {
-            router.replace("/userStorage");
+            router.replace("/signup");
           }
         }, 1000);
       });
