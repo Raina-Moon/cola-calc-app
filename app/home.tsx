@@ -9,6 +9,8 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
+import { useAuthStore } from "./store/authStore";
+import { caculateMaxCola } from "@/utils/calculator";
 
 type FilterType = "original" | "zero";
 const { width } = Dimensions.get("window");
@@ -18,15 +20,20 @@ const home = () => {
   const [sum, setSum] = useState(0);
   const fillAnim = useRef(new Animated.Value(0)).current;
 
-  const max = 2000;
+  const weight = useAuthStore((state) => state.user?.weight);
+
+  const max = weight
+    ? caculateMaxCola(weight, filter.toUpperCase() as "ORIGINAL" | "ZERO")
+    : 1;
 
   useEffect(() => {
+    if (!weight) return;
     Animated.timing(fillAnim, {
       toValue: sum / max,
       duration: 500,
       useNativeDriver: false,
     }).start();
-  }, [sum]);
+  }, [sum, weight]);
 
   const colaImages: Record<FilterType, { image: any; ml: number }[]> = {
     original: [
