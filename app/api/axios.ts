@@ -1,8 +1,9 @@
 import axios from "axios";
 import { useAuthStore } from "../store/authStore";
 import { refreshAccessToken } from "./auth";
+import Constants from "expo-constants";
 
-const API = axios.create({ baseURL: process.env.API_URL });
+const API = axios.create({ baseURL: Constants.expoConfig?.extra?.API_URL });
 
 API.interceptors.request.use(
   async (config) => {
