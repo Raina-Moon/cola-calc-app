@@ -18,7 +18,7 @@ interface AuthState {
     refreshToken: string
   ) => Promise<void>;
   logout: () => Promise<void>;
-  loadFromStorage: () => Promise<void>;
+  loadFromStorage: () => Promise<User | null>;
 }
 
 export const useAuthStore = create<AuthState>((set) => ({
@@ -40,7 +40,14 @@ export const useAuthStore = create<AuthState>((set) => ({
     const user = await AsyncStorage.getItem("user");
     const accessToken = await AsyncStorage.getItem("accessToken");
     const refreshToken = await AsyncStorage.getItem("refreshToken");
-    if (user && accessToken && refreshToken)
-      return set({ user: JSON.parse(user), accessToken, refreshToken });
+    if (user && accessToken && refreshToken) {
+      const parsedUser = JSON.parse(user);
+      set({ user: parsedUser, accessToken, refreshToken });
+      return parsedUser;
+    } else {
+      await AsyncStorage.multiRemove(["user", "accessToken", "refreshToken"]);
+      set({ user: null, accessToken: null, refreshToken: null });
+    return null;
+    }
   },
 }));
