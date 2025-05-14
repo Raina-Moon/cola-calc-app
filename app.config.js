@@ -1,0 +1,34 @@
+export default {
+  expo: {
+    name: "cola-calc-app",
+    slug: "cola-calc-app",
+    version: "1.0.0",
+    orientation: "portrait",
+    icon: "./assets/images/icon.png",
+    scheme: "colacalcapp",
+    userInterfaceStyle: "automatic",
+    newArchEnabled: true,
+    ios: {
+      supportsTablet: true,
+    },
+    android: {
+      adaptiveIcon: {
+        foregroundImage: "./assets/images/adaptive-icon.png",
+        backgroundColor: "#ffffff",
+      },
+      edgeToEdgeEnabled: true,
+    },
+    web: {
+      bundler: "metro",
+      output: "static",
+      favicon: "./assets/images/favicon.png",
+    },
+    plugins: [],
+    experiments: {
+      typedRoutes: true,
+    },
+    extra: {
+      API_URL: "http://54.161.66.184:5000/api",
+    },
+  },
+};
