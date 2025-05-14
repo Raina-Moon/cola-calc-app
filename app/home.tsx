@@ -33,7 +33,7 @@ const home = () => {
       duration: 500,
       useNativeDriver: false,
     }).start();
-  }, [sum, weight]);
+  }, [sum, weight, filter]);
 
   const colaImages: Record<FilterType, { image: any; ml: number }[]> = {
     original: [
