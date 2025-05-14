@@ -8,6 +8,7 @@ import {
   TouchableOpacity,
 } from "react-native";
 import { login } from "./api/auth";
+import { useGlobalLoadingStore } from "./store/useGlobalLoadingStore ";
 
 export default function loginPage() {
   const [name, setName] = useState("");
@@ -17,6 +18,9 @@ export default function loginPage() {
   const [error, setError] = useState("");
 
   const router = useRouter();
+
+  const setLoading = useGlobalLoadingStore((state) => state.setLoading)
+
   const handleLogin = async () => {
     const isCompleted = name && year && month && day;
     if (!isCompleted) return;
@@ -27,10 +31,13 @@ export default function loginPage() {
     )}`;
 
     try {
+        setLoading(true);
       await login(name, birthday);
       router.replace("/home");
     } catch (error) {
       setError("Invalid name or birthday. Please try again.");
+    } finally {
+        setLoading(false);
     }
   };
 
