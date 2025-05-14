@@ -26,6 +26,7 @@ export default function Signup() {
   const [dayError, setDayError] = useState("");
   const [yearError, setYearError] = useState("");
   const [weightError, setWeightError] = useState("");
+  const [nameError, setNameError] = useState("");
 
   const router = useRouter();
 
@@ -37,6 +38,7 @@ export default function Signup() {
     setDayError("");
     setYearError("");
     setWeightError("");
+    setNameError("");
 
     let hasError = false;
 
@@ -69,8 +71,8 @@ export default function Signup() {
       hasError = true;
     }
 
-    if (!name || !year || !month || !day || !weight) {
-      setErrorMessage("Please fill in all fields.");
+    if (!name) {
+      setNameError("Please enter your name.");
       hasError = true;
     }
 
@@ -104,16 +106,27 @@ export default function Signup() {
         style={styles.container}
         behavior={Platform.OS === "ios" ? "padding" : "height"}
       >
-        <ScrollView keyboardShouldPersistTaps="handled">
+        <ScrollView
+          keyboardShouldPersistTaps="handled"
+          contentContainerStyle={[styles.scrollContent,{ flexGrow: 1 }]}
+        >
+          <Text style={styles.title}>You sip. We sense.</Text>
+          <Text style={styles.subtitle}>
+            Welcome to the fizzy future of self-awareness.
+          </Text>
           <Text style={styles.inputText}>Name</Text>
           <TextInput
             placeholder="Put your name here..."
             placeholderTextColor="#888"
             onChangeText={setName}
-            style={[styles.input,
-              name ? { borderColor: "#000" } : { borderColor: "#ff0000" },
+            style={[
+              styles.input,
+              nameError
+                ? { borderColor: "#ff0000" }
+                : { borderColor: "#141414" },
             ]}
           />
+          {nameError ? <Text style={styles.errorText}>{nameError}</Text> : null}
           <Text style={styles.inputText}>Birthday</Text>
           <View style={styles.birthdayContainer}>
             <View style={styles.birthdayColumn}>
@@ -129,7 +142,7 @@ export default function Signup() {
                   styles.birthdayInput,
                   monthError
                     ? { borderColor: "#ff0000" }
-                    : { borderColor: "#000" },
+                    : { borderColor: "#141414" },
                 ]}
                 placeholderTextColor="#888"
               />
@@ -151,7 +164,7 @@ export default function Signup() {
                   styles.birthdayInput,
                   dayError
                     ? { borderColor: "#ff0000" }
-                    : { borderColor: "#000" },
+                    : { borderColor: "#141414" },
                 ]}
                 placeholderTextColor="#888"
               />
@@ -173,7 +186,7 @@ export default function Signup() {
                   styles.birthdayInput,
                   yearError
                     ? { borderColor: "#ff0000" }
-                    : { borderColor: "#000" },
+                    : { borderColor: "#141414" },
                 ]}
                 placeholderTextColor="#888"
               />
@@ -195,21 +208,21 @@ export default function Signup() {
               styles.input,
               weightError
                 ? { borderColor: "#ff0000" }
-                : { borderColor: "#000" },
+                : { borderColor: "#141414" },
             ]}
           />
           {weightError ? (
             <Text style={styles.errorText}>{weightError}</Text>
           ) : null}
-          <TouchableOpacity onPress={handleSignup}>
-            <Text>Sign Up</Text>
+          <TouchableOpacity onPress={handleSignup} style={styles.button}>
+            <Text style={styles.buttonText}>Sign Up</Text>
           </TouchableOpacity>
 
           {errorMessage ? (
             <Text style={styles.errorText}>{errorMessage}</Text>
           ) : null}
           <TouchableOpacity onPress={() => router.replace("/login")}>
-            <Text>Already Have Account?</Text>
+            <Text style={{ color: "#141414" }}>Already Have Account?</Text>
           </TouchableOpacity>
         </ScrollView>
       </KeyboardAvoidingView>
@@ -220,13 +233,20 @@ export default function Signup() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: "center",
+    backgroundColor: "#fdfdfd",
+  },
+  scrollContent: {
     alignItems: "center",
+    paddingVertical: 40,
   },
   inputText: {
-    textAlign: "left",
+    alignSelf: "flex-start",
     fontSize: 18,
     fontWeight: "bold",
+    color: "#141414",
+    marginLeft: "10%",
+    marginBottom: 8,
+    marginTop: 10,
   },
   input: {
     width: "80%",
@@ -249,6 +269,9 @@ const styles = StyleSheet.create({
     fontSize: 16,
     marginBottom: 4,
     fontWeight: "500",
+    color: "#141414",
+    alignSelf: "flex-start",
+    marginLeft: "5%",
   },
   birthdayInput: {
     width: "90%",
@@ -257,12 +280,41 @@ const styles = StyleSheet.create({
     padding: 10,
     backgroundColor: "#fff",
     textAlign: "center",
-    color: "#000",
+    color: "#141414",
   },
   errorText: {
     color: "#ff0000",
-    fontSize: 10,
-    marginTop: 4,
+    fontSize: 9,
+    alignSelf: "flex-start",
+    marginLeft: "10%",
+    marginTop: 3,
+  },
+  button: {
+    backgroundColor: "#007AFF",
+    paddingVertical: 12,
+    paddingHorizontal: 32,
+    borderRadius: 8,
+    marginTop: 16,
+    alignSelf: "center",
+    marginBottom: 20,
+  },
+  buttonText: {
+    color: "#fff",
+    fontWeight: "600",
+    fontSize: 16,
     textAlign: "center",
+  },
+  title: {
+    fontSize: 24,
+    fontWeight: "bold",
+    color: "#141414",
+    textAlign: "center",
+    marginBottom: 4,
+  },
+  subtitle: {
+    fontSize: 14,
+    color: "#555",
+    textAlign: "center",
+    marginBottom: 24,
   },
 });
