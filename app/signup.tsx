@@ -46,12 +46,12 @@ export default function Signup() {
     const weightNum = parseInt(weight, 10);
 
     if (isNaN(monthNum) || monthNum < 1 || monthNum > 12) {
-      setMonthError("Invalid month. Please enter a valid month (1-12).");
+      setMonthError("Please enter a valid month (1-12).");
       hasError = true;
     }
 
     if (isNaN(dayNum) || dayNum < 1 || dayNum > 31) {
-      setDayError("Invalid day. Please enter a valid day (1-31).");
+      setDayError("Please enter a valid day (1-31).");
       hasError = true;
     }
 
@@ -60,12 +60,12 @@ export default function Signup() {
       yearNum < 1900 ||
       yearNum > new Date().getFullYear()
     ) {
-      setYearError("Invalid year. Please enter a valid year.");
+      setYearError("Please enter a valid year.");
       hasError = true;
     }
 
     if (isNaN(weightNum) || weightNum <= 0) {
-      setWeightError("Invalid weight. Please enter a valid weight.");
+      setWeightError("Please enter a valid weight.");
       hasError = true;
     }
 
@@ -110,7 +110,9 @@ export default function Signup() {
             placeholder="Put your name here..."
             placeholderTextColor="#888"
             onChangeText={setName}
-            style={styles.input}
+            style={[styles.input,
+              name ? { borderColor: "#000" } : { borderColor: "#ff0000" },
+            ]}
           />
           <Text style={styles.inputText}>Birthday</Text>
           <View style={styles.birthdayContainer}>
@@ -123,7 +125,12 @@ export default function Signup() {
                 }}
                 placeholder="MM"
                 keyboardType="numeric"
-                style={styles.birthdayInput}
+                style={[
+                  styles.birthdayInput,
+                  monthError
+                    ? { borderColor: "#ff0000" }
+                    : { borderColor: "#000" },
+                ]}
                 placeholderTextColor="#888"
               />
               {monthError ? (
@@ -140,7 +147,12 @@ export default function Signup() {
                 }}
                 placeholder="DD"
                 keyboardType="numeric"
-                style={styles.birthdayInput}
+                style={[
+                  styles.birthdayInput,
+                  dayError
+                    ? { borderColor: "#ff0000" }
+                    : { borderColor: "#000" },
+                ]}
                 placeholderTextColor="#888"
               />
               {dayError ? (
@@ -157,7 +169,12 @@ export default function Signup() {
                 }}
                 placeholder="YYYY"
                 keyboardType="numeric"
-                style={styles.birthdayInput}
+                style={[
+                  styles.birthdayInput,
+                  yearError
+                    ? { borderColor: "#ff0000" }
+                    : { borderColor: "#000" },
+                ]}
                 placeholderTextColor="#888"
               />
               {yearError ? (
@@ -174,7 +191,12 @@ export default function Signup() {
             keyboardType="numeric"
             placeholder="Enter your weight"
             placeholderTextColor="#888"
-            style={styles.input}
+            style={[
+              styles.input,
+              weightError
+                ? { borderColor: "#ff0000" }
+                : { borderColor: "#000" },
+            ]}
           />
           {weightError ? (
             <Text style={styles.errorText}>{weightError}</Text>
@@ -183,7 +205,9 @@ export default function Signup() {
             <Text>Sign Up</Text>
           </TouchableOpacity>
 
-          {errorMessage ? <Text style={styles.errorText}>{errorMessage}</Text> : null}
+          {errorMessage ? (
+            <Text style={styles.errorText}>{errorMessage}</Text>
+          ) : null}
           <TouchableOpacity onPress={() => router.replace("/login")}>
             <Text>Already Have Account?</Text>
           </TouchableOpacity>
@@ -207,7 +231,6 @@ const styles = StyleSheet.create({
   input: {
     width: "80%",
     borderWidth: 1,
-    borderColor: "#000",
     borderRadius: 5,
     padding: 10,
     marginBottom: 10,
@@ -230,7 +253,6 @@ const styles = StyleSheet.create({
   birthdayInput: {
     width: "90%",
     borderWidth: 1,
-    borderColor: "#000",
     borderRadius: 5,
     padding: 10,
     backgroundColor: "#fff",
@@ -239,7 +261,7 @@ const styles = StyleSheet.create({
   },
   errorText: {
     color: "#ff0000",
-    fontSize: 12,
+    fontSize: 10,
     marginTop: 4,
     textAlign: "center",
   },
