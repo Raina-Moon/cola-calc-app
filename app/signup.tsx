@@ -1,6 +1,5 @@
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useRouter } from "expo-router";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import {
   Keyboard,
   KeyboardAvoidingView,
@@ -13,6 +12,7 @@ import {
   TouchableWithoutFeedback,
   View,
 } from "react-native";
+import { login, register } from "./api/auth";
 
 export default function Signup() {
   const [name, setName] = useState("");
@@ -23,18 +23,24 @@ export default function Signup() {
 
   const router = useRouter();
 
-  useEffect(() => {
-    const saveData = async () => {
-      const isCompleted = name && year && month && day && weight;
-      if (!isCompleted) return;
+  const handleSignup = async () => {
+    const iscompleted = name && year && month && day && weight;
+    if (!iscompleted) return;
 
-      const data = { name, birthday: { year, month, day }, weight };
-      await AsyncStorage.setItem("users", JSON.stringify(data));
+    const birthday = `${year}-${month.padStart(2, "0")}-${day.padStart(
+      2,
+      "0"
+    )}`;
 
+    try {
+      await register(name, birthday, Number(weight));
+      await login(name, birthday);
       router.replace("/home");
-    };
-    saveData();
-  }, [name, year, month, day, weight]);
+    } catch (err) {
+      console.error(err);
+      alert("Error signing up");
+    }
+  };
 
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
@@ -65,7 +71,9 @@ export default function Signup() {
             placeholder="Enter your weight"
             style={styles.input}
           />
-
+          <TouchableOpacity onPress={handleSignup}>
+            <Text>Sign Up</Text>
+          </TouchableOpacity>
           <TouchableOpacity onPress={() => router.replace("/login")}>
             <Text>Already Have Account?</Text>
           </TouchableOpacity>
@@ -73,7 +81,7 @@ export default function Signup() {
       </KeyboardAvoidingView>
     </TouchableWithoutFeedback>
   );
-};
+}
 
 const styles = StyleSheet.create({
   container: {

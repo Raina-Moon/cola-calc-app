@@ -1,4 +1,3 @@
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useRouter } from "expo-router";
 import React, { useState } from "react";
 import {
@@ -8,22 +7,31 @@ import {
   TextInput,
   TouchableOpacity,
 } from "react-native";
+import { login } from "./api/auth";
 
-export default function login() {
+export default function loginPage() {
   const [name, setName] = useState("");
   const [year, setYear] = useState("");
   const [month, setMonth] = useState("");
   const [day, setDay] = useState("");
+  const [error, setError] = useState("");
 
   const router = useRouter();
   const handleLogin = async () => {
     const isCompleted = name && year && month && day;
     if (!isCompleted) return;
 
-    const data = { name, birthday: { year, month, day } };
-    await AsyncStorage.setItem("users", JSON.stringify(data));
+    const birthday = `${year}-${month.padStart(2, "0")}-${day.padStart(
+      2,
+      "0"
+    )}`;
 
-    router.replace("/home");
+    try {
+      await login(name, birthday);
+      router.replace("/home");
+    } catch (error) {
+      setError("Invalid name or birthday. Please try again.");
+    }
   };
 
   return (
