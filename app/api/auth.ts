@@ -1,4 +1,6 @@
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
+import { useAuthStore } from "../store/authStore";
 
 const API_URL = "http://54.161.66.184/5000/api";
 
@@ -33,12 +35,29 @@ export const login = async (name: string, birthday: string) => {
   });
 
   if (res.status !== 200) throw new Error("Failed to login");
-  return res.data;
+
+  const { accessToken, refreshtoken, user } = res.data;
+  await useAuthStore.getState().login(user, accessToken, refreshtoken);
+
+  return user;
 };
 
-export const refreshAccessToken = async (refreshtoken: string) => {
-  const res = await axios.post(`${API_URL}/auth/refresh`, {
-    refreshtoken,
-  });
-  return res.data.accessToken;
+export const refreshAccessToken = async () => {
+  const refreshtoken = useAuthStore.getState().refreshToken;
+
+  if (!refreshtoken) throw new Error("No refresh token found");
+
+  try {
+    const res = await axios.post(`${API_URL}/auth/refresh`, {
+      refreshtoken: refreshtoken,
+    });
+
+    const newAccessToken = res.data.accessToken;
+
+    useAuthStore.setState({ accessToken: newAccessToken });
+    return newAccessToken;
+  } catch (err) {
+    await useAuthStore.getState().logout();
+    throw new Error("Failed to refresh access token");
+  }
 };
