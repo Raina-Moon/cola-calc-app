@@ -20,10 +20,12 @@ export default function Signup() {
   const [month, setMonth] = useState("");
   const [day, setDay] = useState("");
   const [weight, setWeight] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
 
   const router = useRouter();
 
   const handleSignup = async () => {
+    setErrorMessage("");
     const iscompleted = name && year && month && day && weight;
     if (!iscompleted) return;
 
@@ -36,9 +38,13 @@ export default function Signup() {
       await register(name, birthday, Number(weight));
       await login(name, birthday);
       router.replace("/home");
-    } catch (err) {
-      console.error(err);
-      alert("Error signing up");
+    } catch (error: any) {
+      console.error(error);
+      if (error.response?.status === 409) {
+        setErrorMessage("User already exists. Please try again.");
+      } else {
+        setErrorMessage("An error occurred. Please try again.");
+      }
     }
   };
 
@@ -74,6 +80,8 @@ export default function Signup() {
           <TouchableOpacity onPress={handleSignup}>
             <Text>Sign Up</Text>
           </TouchableOpacity>
+
+          {errorMessage ? <Text>{errorMessage}</Text> : null}
           <TouchableOpacity onPress={() => router.replace("/login")}>
             <Text>Already Have Account?</Text>
           </TouchableOpacity>

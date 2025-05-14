@@ -51,6 +51,8 @@ export default function loginPage() {
         <TouchableOpacity onPress={handleLogin}>
           <Text>Login</Text>
         </TouchableOpacity>
+
+        {error ? <Text style={{ color: "red" }}>{error}</Text> : null}
       </ScrollView>
     </KeyboardAvoidingView>
   );
