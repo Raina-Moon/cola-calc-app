@@ -1,10 +1,10 @@
-export default {
+module.exports = {
   expo: {
     name: "cola-calc-app",
     slug: "cola-calc-app",
     version: "1.0.0",
     orientation: "portrait",
-    icon: "./assets/images/icon.png",
+    icon: "./assets/images/sipsense.png",
     scheme: "colacalcapp",
     userInterfaceStyle: "automatic",
     newArchEnabled: true,
@@ -13,7 +13,7 @@ export default {
     },
     android: {
       adaptiveIcon: {
-        foregroundImage: "./assets/images/adaptive-icon.png",
+        foregroundImage: "./assets/images/sipsense.png",
         backgroundColor: "#ffffff",
       },
       edgeToEdgeEnabled: true,
@@ -21,7 +21,7 @@ export default {
     web: {
       bundler: "metro",
       output: "static",
-      favicon: "./assets/images/favicon.png",
+      favicon: "./assets/images/sipsense.png",
     },
     plugins: [],
     experiments: {
