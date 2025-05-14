@@ -13,6 +13,7 @@ import {
   View,
 } from "react-native";
 import { login, register } from "./api/auth";
+import { useGlobalLoadingStore } from "./store/useGlobalLoadingStore ";
 
 export default function Signup() {
   const [name, setName] = useState("");
@@ -23,6 +24,8 @@ export default function Signup() {
   const [errorMessage, setErrorMessage] = useState("");
 
   const router = useRouter();
+
+  const setLoading = useGlobalLoadingStore((state) => state.setLoading);
 
   const handleSignup = async () => {
     setErrorMessage("");
@@ -35,6 +38,7 @@ export default function Signup() {
     )}`;
 
     try {
+      setLoading(true);
       await register(name, birthday, Number(weight));
       await login(name, birthday);
       router.replace("/home");
@@ -45,6 +49,8 @@ export default function Signup() {
       } else {
         setErrorMessage("An error occurred. Please try again.");
       }
+    } finally {
+      setLoading(false);
     }
   };
 
