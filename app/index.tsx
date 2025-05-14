@@ -22,11 +22,11 @@ export default function Index() {
   const router = useRouter();
 
   const loadFromStorage = useAuthStore((state) => state.loadFromStorage)
-  const user = useAuthStore((state) => state.user)
 
   useEffect(() => {
     const startAnimation = async () => {
-      await loadFromStorage()
+      const userLoad = await loadFromStorage()
+
       Animated.timing(scaleAnim, {
         toValue: 1,
         duration: 800,
@@ -37,10 +37,10 @@ export default function Index() {
 
 
         setTimeout(() => {
-          if (user) {
+          if (userLoad) {
             router.replace("/home");
           } else {
-            router.replace("/userStorage");
+            router.replace("/signup");
           }
         }, 1000);
       });
