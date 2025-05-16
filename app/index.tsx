@@ -21,12 +21,10 @@ export default function Index() {
   const bubbleId = useRef(0);
   const router = useRouter();
 
-  const loadFromStorage = useAuthStore((state) => state.loadFromStorage)
+  const user = useAuthStore((state) => state.user)
 
   useEffect(() => {
     const startAnimation = async () => {
-      const userLoad = await loadFromStorage()
-
       Animated.timing(scaleAnim, {
         toValue: 1,
         duration: 800,
@@ -37,7 +35,7 @@ export default function Index() {
 
 
         setTimeout(() => {
-          if (userLoad) {
+          if (user) {
             router.replace("/home");
           } else {
             router.replace("/signup");
@@ -46,7 +44,7 @@ export default function Index() {
       });
     };
     startAnimation();
-  }, []);
+  }, [user,router]);
 
   useEffect(() => {
     const interval = setInterval(() => {

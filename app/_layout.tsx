@@ -4,6 +4,24 @@ import { ActivityIndicator, View } from "react-native";
 import { useEffect, useState } from "react";
 import { useAuthStore } from "./store/authStore";
 
+const initializingUseAuth = () => {
+  const [ready, setReady] = useState(false);
+  const loadFromStorage = useAuthStore((state) => state.loadFromStorage);
+
+  useEffect(() => {
+    const initialize = async () => {
+      try {
+        await loadFromStorage();
+      } finally {
+        setReady(true);
+      }
+    };
+    initialize();
+  }, [loadFromStorage]);
+
+  return ready;
+};
+
 const GlobalLoading = () => {
   const loading = useGlobalLoadingStore((state) => state.loading);
 
@@ -28,17 +46,8 @@ const GlobalLoading = () => {
   );
 };
 export default function RootLayout() {
-  const [ready, setReady] = useState(false);
-
-  useEffect(() => {
-    const load = async () => {
-      await useAuthStore.getState().loadFromStorage();
-      setReady(true);
-    };
-    load();
-  }, []);
-
-  if (!ready) {
+  const isReady = initializingUseAuth();
+  if (!isReady) {
     return (
       <View
         style={{
