@@ -1,3 +1,4 @@
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useAuthStore } from "../store/authStore";
 import API from "./axios";
 
@@ -44,7 +45,7 @@ export const refreshAccessToken = async () => {
     });
 
     const newAccessToken = res.data.accessToken;
-
+    await AsyncStorage.setItem("accessToken", newAccessToken);
     useAuthStore.setState({ accessToken: newAccessToken });
     return newAccessToken;
   } catch (err) {
