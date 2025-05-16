@@ -14,6 +14,7 @@ import { caculateMaxCola } from "@/utils/calculator";
 import { getDailyCola, postCola } from "./api/cola";
 import { Ionicons } from "@expo/vector-icons";
 import SideBar from "./components/SideBar";
+import { useRouter } from "expo-router";
 
 type FilterType = "original" | "zero";
 const { width } = Dimensions.get("window");
@@ -24,6 +25,7 @@ const home = () => {
   const [sideBarVisible, setSideBarVisible] = useState(false);
   const fillAnim = useRef(new Animated.Value(0)).current;
   const slideAnim = useRef(new Animated.Value(-width * 0.8)).current;
+  const router = useRouter();
 
   const weight = useAuthStore((state) => state.user?.weight);
 
@@ -102,6 +104,9 @@ const home = () => {
     <ScrollView contentContainerStyle={styles.container}>
       <TouchableOpacity onPress={() => setSideBarVisible((prev) => !prev)}>
         <Ionicons name="menu" size={30} color="#000" />
+      </TouchableOpacity>
+      <TouchableOpacity onPress={() => router.push("/notificationsList")}>
+        <Ionicons name="notifications" size={30} color="#000" />
       </TouchableOpacity>
       <View>
         <Text>You Drank {sum} ml of Cola Today!</Text>
