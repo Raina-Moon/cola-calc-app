@@ -1,5 +1,6 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { create } from "zustand";
+import API from "../api/axios";
 
 interface User {
   id: number;
@@ -19,9 +20,11 @@ interface AuthState {
   ) => Promise<void>;
   logout: () => Promise<void>;
   loadFromStorage: () => Promise<User | null>;
+  refeshAccessToken: () => Promise<string>;
+  updateUser: (updatedUser: User) => Promise<void>;
 }
 
-export const useAuthStore = create<AuthState>((set) => ({
+export const useAuthStore = create<AuthState>((set, get) => ({
   user: null,
   accessToken: null,
   refreshToken: null,
@@ -47,7 +50,26 @@ export const useAuthStore = create<AuthState>((set) => ({
     } else {
       await AsyncStorage.multiRemove(["user", "accessToken", "refreshToken"]);
       set({ user: null, accessToken: null, refreshToken: null });
-    return null;
+      return null;
     }
+  },
+
+  refeshAccessToken: async () => {
+    const refreshToken = get().refreshToken;
+    if (!refreshToken) throw new Error("No refresh token found");
+    try {
+      const res = await API.post("/auth/refresh", { refreshToken });
+      const newAccessToken = res.data.accessToken;
+      await AsyncStorage.setItem("accessToken", newAccessToken);
+      set({ accessToken: newAccessToken });
+      return newAccessToken;
+    } catch (err: any) {
+      await get().logout();
+      throw err;
+    }
+  },
+  updateUser: async (updatedUser: User) => {
+    await AsyncStorage.setItem("user", JSON.stringify(updatedUser));
+    set({ user: updatedUser });
   },
 }));
