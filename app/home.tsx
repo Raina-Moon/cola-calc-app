@@ -254,7 +254,7 @@ const styles = StyleSheet.create({
   sideBarBox: {
     width: "45%",
     height: "100%",
-    backgroundColor: "#fff",
+    backgroundColor: "#de0000",
     padding: 20,
   },
 });
