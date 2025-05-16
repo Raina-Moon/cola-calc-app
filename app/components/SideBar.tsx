@@ -14,6 +14,9 @@ const SideBar = () => {
       case "home":
         router.replace("/home");
         break;
+      case "siplog":
+        router.replace("/siplog");
+        break;
       case "settings":
         router.replace("/settings");
         break;
@@ -27,6 +30,7 @@ const SideBar = () => {
 
   const itemList = [
     { id: "home", name: "Home" },
+    { id: "siplog", name: "Sip Log" },
     { id: "settings", name: "Settings" },
     { id: "logout", name: "Logout" },
   ];
@@ -40,7 +44,10 @@ const SideBar = () => {
       </TouchableOpacity>
       {itemList.map((item) => (
         <View key={item.id}>
-          <Text onPress={() => handleSelect(item.id)} style={{ color: "#fff", fontSize: 18,marginTop: 10 }}>
+          <Text
+            onPress={() => handleSelect(item.id)}
+            style={{ color: "#fff", fontSize: 18, marginTop: 10 }}
+          >
             {item.name}
           </Text>
         </View>
