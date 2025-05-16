@@ -11,6 +11,8 @@ import {
 } from "react-native";
 import { useAuthStore } from "./store/authStore";
 import { caculateMaxCola } from "@/utils/calculator";
+import { getDailyCola, postCola } from "./api/cola";
+import Constants from "expo-constants";
 
 type FilterType = "original" | "zero";
 const { width } = Dimensions.get("window");
@@ -50,8 +52,32 @@ const home = () => {
     ],
   };
 
-  const handleSum = (value: number) => {
+  useEffect(() => {
+    const fetchToday = async () => {
+      try {
+        const colaType = filter === "original" ? "ORIGINAL" : "ZERO";
+        const total = await getDailyCola(new Date(), colaType);
+        setSum(total);
+      } catch (e) {
+        setSum(0);
+      }
+    };
+
+    fetchToday();
+  }, [filter]);
+
+  const handleSum = async (value: number) => {
     setSum((num) => num + value);
+    try {
+      const colaType = filter === "original" ? "ORIGINAL" : "ZERO";
+
+      await postCola(value, colaType);
+      const total = await getDailyCola(new Date(), colaType);
+
+      setSum(total);
+    } catch (error) {
+      console.error("Error posting cola:", error);
+    }
   };
 
   return (

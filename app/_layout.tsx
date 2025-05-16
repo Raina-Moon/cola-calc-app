@@ -1,6 +1,8 @@
 import { Stack } from "expo-router";
 import { useGlobalLoadingStore } from "./store/useGlobalLoadingStore ";
 import { ActivityIndicator, View } from "react-native";
+import { useEffect, useState } from "react";
+import { useAuthStore } from "./store/authStore";
 
 const GlobalLoading = () => {
   const loading = useGlobalLoadingStore((state) => state.loading);
@@ -26,6 +28,31 @@ const GlobalLoading = () => {
   );
 };
 export default function RootLayout() {
+  const [ready, setReady] = useState(false);
+
+  useEffect(() => {
+    const load = async () => {
+      await useAuthStore.getState().loadFromStorage();
+      setReady(true);
+    };
+    load();
+  }, []);
+
+  if (!ready) {
+    return (
+      <View
+        style={{
+          flex: 1,
+          justifyContent: "center",
+          alignItems: "center",
+          backgroundColor: "#000",
+        }}
+      >
+        <ActivityIndicator size="large" color="#fff" />
+      </View>
+    );
+  }
+
   return (
     <>
       <Stack />
