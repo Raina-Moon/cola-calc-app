@@ -7,6 +7,7 @@ interface User {
   name: string;
   birthday: string;
   weight: number;
+  notificationEnabled: boolean;
 }
 
 interface AuthState {
