@@ -12,7 +12,6 @@ import {
 import { useAuthStore } from "./store/authStore";
 import { caculateMaxCola } from "@/utils/calculator";
 import { getDailyCola, postCola } from "./api/cola";
-import Constants from "expo-constants";
 
 type FilterType = "original" | "zero";
 const { width } = Dimensions.get("window");
@@ -24,9 +23,8 @@ const home = () => {
 
   const weight = useAuthStore((state) => state.user?.weight);
 
-  const max = weight
-    ? caculateMaxCola(weight, filter.toUpperCase() as "ORIGINAL" | "ZERO")
-    : 1;
+  const colaType = filter === "original" ? "ORIGINAL" : "ZERO";
+  const max = weight ? caculateMaxCola(weight, colaType) : 1;
 
   useEffect(() => {
     if (!weight) return;
@@ -96,6 +94,7 @@ const home = () => {
               },
             ]}
           ></Animated.View>
+          <Text style={styles.maxText}>{Math.floor(max)}ml</Text>
         </View>
       </View>
       <View style={styles.filterContainer}>
@@ -180,6 +179,7 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     overflow: "hidden",
     backgroundColor: "#fff",
+    alignSelf: "center",
   },
   filledBar: {
     height: "100%",
@@ -193,5 +193,11 @@ const styles = StyleSheet.create({
     backgroundColor: "white",
     borderRadius: 4,
     position: "absolute",
+  },
+  maxText: {
+    fontSize: 16,
+    textAlign: "center",
+    marginTop: 10,
+    color: "#333",
   },
 });
