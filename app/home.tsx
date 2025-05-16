@@ -23,6 +23,7 @@ const home = () => {
   const [sum, setSum] = useState(0);
   const [sideBarVisible, setSideBarVisible] = useState(false);
   const fillAnim = useRef(new Animated.Value(0)).current;
+  const slideAnim = useRef(new Animated.Value(-width * 0.8)).current;
 
   const weight = useAuthStore((state) => state.user?.weight);
 
@@ -37,6 +38,22 @@ const home = () => {
       useNativeDriver: false,
     }).start();
   }, [sum, weight, filter]);
+
+  useEffect(() => {
+    if (sideBarVisible) {
+      Animated.timing(slideAnim, {
+        toValue: 0,
+        duration: 300,
+        useNativeDriver: false,
+      }).start();
+    } else {
+      Animated.timing(slideAnim, {
+        toValue: -width * 0.8,
+        duration: 300,
+        useNativeDriver: false,
+      }).start();
+    }
+  }, [sideBarVisible]);
 
   const colaImages: Record<FilterType, { image: any; ml: number }[]> = {
     original: [
@@ -138,11 +155,14 @@ const home = () => {
           onPress={() => setSideBarVisible(false)}
           style={styles.overlay}
         >
-          <TouchableOpacity
-          style={styles.sideBarBox}
-          activeOpacity={1} onPress={() => {}}>
+          <Animated.View
+            style={[
+              styles.sideBarBox,
+              { transform: [{ translateX: slideAnim }] },
+            ]}
+          >
             <SideBar />
-          </TouchableOpacity>
+          </Animated.View>
         </TouchableOpacity>
       )}
     </ScrollView>
