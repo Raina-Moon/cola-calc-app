@@ -9,6 +9,9 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
+import { useAuthStore } from "./store/authStore";
+import { caculateMaxCola } from "@/utils/calculator";
+import { getDailyCola, postCola } from "./api/cola";
 
 type FilterType = "original" | "zero";
 const { width } = Dimensions.get("window");
@@ -18,15 +21,19 @@ const home = () => {
   const [sum, setSum] = useState(0);
   const fillAnim = useRef(new Animated.Value(0)).current;
 
-  const max = 2000;
+  const weight = useAuthStore((state) => state.user?.weight);
+
+  const colaType = filter === "original" ? "ORIGINAL" : "ZERO";
+  const max = weight ? caculateMaxCola(weight, colaType) : 1;
 
   useEffect(() => {
+    if (!weight) return;
     Animated.timing(fillAnim, {
       toValue: sum / max,
       duration: 500,
       useNativeDriver: false,
     }).start();
-  }, [sum]);
+  }, [sum, weight, filter]);
 
   const colaImages: Record<FilterType, { image: any; ml: number }[]> = {
     original: [
@@ -43,8 +50,32 @@ const home = () => {
     ],
   };
 
-  const handleSum = (value: number) => {
+  useEffect(() => {
+    const fetchToday = async () => {
+      try {
+        const colaType = filter === "original" ? "ORIGINAL" : "ZERO";
+        const total = await getDailyCola(new Date(), colaType);
+        setSum(total);
+      } catch (e) {
+        setSum(0);
+      }
+    };
+
+    fetchToday();
+  }, [filter]);
+
+  const handleSum = async (value: number) => {
     setSum((num) => num + value);
+    try {
+      const colaType = filter === "original" ? "ORIGINAL" : "ZERO";
+
+      await postCola(value, colaType);
+      const total = await getDailyCola(new Date(), colaType);
+
+      setSum(total);
+    } catch (error) {
+      console.error("Error posting cola:", error);
+    }
   };
 
   return (
@@ -63,6 +94,7 @@ const home = () => {
               },
             ]}
           ></Animated.View>
+          <Text style={styles.maxText}>{Math.floor(max)}ml</Text>
         </View>
       </View>
       <View style={styles.filterContainer}>
@@ -147,6 +179,7 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     overflow: "hidden",
     backgroundColor: "#fff",
+    alignSelf: "center",
   },
   filledBar: {
     height: "100%",
@@ -160,5 +193,11 @@ const styles = StyleSheet.create({
     backgroundColor: "white",
     borderRadius: 4,
     position: "absolute",
+  },
+  maxText: {
+    fontSize: 16,
+    textAlign: "center",
+    marginTop: 10,
+    color: "#333",
   },
 });
