@@ -12,6 +12,8 @@ import {
 import { useAuthStore } from "./store/authStore";
 import { caculateMaxCola } from "@/utils/calculator";
 import { getDailyCola, postCola } from "./api/cola";
+import { Ionicons } from "@expo/vector-icons";
+import SideBar from "./components/SideBar";
 
 type FilterType = "original" | "zero";
 const { width } = Dimensions.get("window");
@@ -19,7 +21,9 @@ const { width } = Dimensions.get("window");
 const home = () => {
   const [filter, setFilter] = useState<FilterType>("original");
   const [sum, setSum] = useState(0);
+  const [sideBarVisible, setSideBarVisible] = useState(false);
   const fillAnim = useRef(new Animated.Value(0)).current;
+  const slideAnim = useRef(new Animated.Value(-width * 0.8)).current;
 
   const weight = useAuthStore((state) => state.user?.weight);
 
@@ -34,6 +38,22 @@ const home = () => {
       useNativeDriver: false,
     }).start();
   }, [sum, weight, filter]);
+
+  useEffect(() => {
+    if (sideBarVisible) {
+      Animated.timing(slideAnim, {
+        toValue: 0,
+        duration: 300,
+        useNativeDriver: false,
+      }).start();
+    } else {
+      Animated.timing(slideAnim, {
+        toValue: -width * 0.8,
+        duration: 300,
+        useNativeDriver: false,
+      }).start();
+    }
+  }, [sideBarVisible]);
 
   const colaImages: Record<FilterType, { image: any; ml: number }[]> = {
     original: [
@@ -80,6 +100,9 @@ const home = () => {
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
+      <TouchableOpacity onPress={() => setSideBarVisible((prev) => !prev)}>
+        <Ionicons name="menu" size={30} color="#000" />
+      </TouchableOpacity>
       <View>
         <Text>You Drank {sum} ml of Cola Today!</Text>
         <View style={styles.barContainer}>
@@ -125,6 +148,23 @@ const home = () => {
       </View>
 
       <Image source={require(`../assets/images/colafairy.png`)} />
+
+      {sideBarVisible && (
+        <TouchableOpacity
+          activeOpacity={1}
+          onPress={() => setSideBarVisible(false)}
+          style={styles.overlay}
+        >
+          <Animated.View
+            style={[
+              styles.sideBarBox,
+              { transform: [{ translateX: slideAnim }] },
+            ]}
+          >
+            <SideBar />
+          </Animated.View>
+        </TouchableOpacity>
+      )}
     </ScrollView>
   );
 };
@@ -199,5 +239,22 @@ const styles = StyleSheet.create({
     textAlign: "center",
     marginTop: 10,
     color: "#333",
+  },
+  overlay: {
+    position: "absolute",
+    top: 0,
+    left: 0,
+    width: "100%",
+    height: "100%",
+    backgroundColor: "rgba(0,0,0,0.5)",
+    justifyContent: "flex-start",
+    alignItems: "flex-start",
+    zIndex: 20,
+  },
+  sideBarBox: {
+    width: "45%",
+    height: "100%",
+    backgroundColor: "#de0000",
+    padding: 20,
   },
 });
