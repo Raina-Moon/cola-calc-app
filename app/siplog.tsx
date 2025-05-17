@@ -136,15 +136,17 @@ const siplog = () => {
             yAxisSuffix="ml"
             chartConfig={{
               backgroundColor: "#4e4e4e",
+              backgroundGradientFrom: "#2b2b2b",
+              backgroundGradientTo: "#2b2b2b",
               color: (opacity = 1) => `rgba(255, 99, 99, ${opacity})`,
               decimalPlaces: 0,
               labelColor: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
-              fillShadowGradient: "#fd4242",
-              fillShadowGradientOpacity: 0.5,
+              fillShadowGradient: "#ff0000",
+              fillShadowGradientOpacity: 0.8,
               propsForDots: {
                 r: "4",
-                strokeWidth: "2",
-                stroke: "#ec3838",
+                strokeWidth: "4",
+                stroke: "#ff0000",
               },
             }}
             bezier
@@ -171,21 +173,30 @@ const siplog = () => {
                 "Nov",
                 "Dec",
               ],
-              datasets: [{ data: monthlyData.length === 12 ? monthlyData : Array(12).fill(0) }],
+              datasets: [
+                {
+                  data:
+                    monthlyData.length === 12 ? monthlyData : Array(12).fill(0),
+                },
+              ],
             }}
             width={isFinite(screenWidth - 30) ? screenWidth - 30 : 300}
             height={220}
             yAxisSuffix="ml"
             chartConfig={{
               backgroundColor: "#202020",
+              backgroundGradientFrom: "#2b2b2b",
+              backgroundGradientTo: "#2b2b2b",
               decimalPlaces: 0,
-              color: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
+              color: (opacity = 1) => `rgba(255, 99, 99, ${opacity})`,
               labelColor: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
               propsForDots: {
                 r: "4",
-                strokeWidth: "2",
-                stroke: "#b02828",
+                strokeWidth: "4",
+                stroke: "#ff0000",
               },
+              fillShadowGradient: "#ff0000",
+              fillShadowGradientOpacity: 0.8,
             }}
             bezier
             style={{ marginVertical: 20, borderRadius: 10 }}
@@ -198,21 +209,29 @@ const siplog = () => {
           <LineChart
             data={{
               labels: yearLabels,
-              datasets: [{ data: yearlyData.length === 6 ? yearlyData : Array(6).fill(0) }],
+              datasets: [
+                {
+                  data: yearlyData.length === 6 ? yearlyData : Array(6).fill(0),
+                },
+              ],
             }}
             width={isFinite(screenWidth - 30) ? screenWidth - 30 : 300}
             height={220}
             yAxisSuffix="ml"
             chartConfig={{
               backgroundColor: "#202020",
+              backgroundGradientFrom: "#2b2b2b",
+              backgroundGradientTo: "#2b2b2b",
               decimalPlaces: 0,
-              color: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
+              color: (opacity = 1) => `rgba(255, 99, 99, ${opacity})`,
               labelColor: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
               propsForDots: {
                 r: "4",
-                strokeWidth: "2",
-                stroke: "#b02828",
+                strokeWidth: "4",
+                stroke: "#ff0000",
               },
+              fillShadowGradient: "#ff0000",
+              fillShadowGradientOpacity: 0.8,
             }}
             bezier
             style={{ marginVertical: 20, borderRadius: 10 }}
