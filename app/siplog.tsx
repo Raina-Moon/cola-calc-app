@@ -87,6 +87,35 @@ const siplog = () => {
     yearly: totalIntake.yearly / (user?.weight || 60),
   };
 
+  const calculateHealthScore = (intake: number, type: "original" | "zero") => {
+    if (type === "original") {
+      if (intake > 20) return 30;
+      if (intake > 15) return 50;
+      if (intake > 10) return 70;
+      if (intake > 5) return 85;
+      return 100;
+    } else {
+      if (intake > 20) return 50;
+      if (intake > 15) return 70;
+      if (intake > 10) return 85;
+      if (intake > 5) return 95;
+      return 100;
+    }
+  };
+
+  const dailyScore = calculateHealthScore(
+    intakePerKg.daily,
+    selectedType as "original" | "zero"
+  );
+  const monthlyScore = calculateHealthScore(
+    intakePerKg.monthly,
+    selectedType as "original" | "zero"
+  );
+  const yearlyScore = calculateHealthScore(
+    intakePerKg.yearly,
+    selectedType as "original" | "zero"
+  );
+
   const generateHealthReport = () => {
     if (!user) return;
     const riskMsgOriginal = (value: number, label: string) => {
@@ -122,12 +151,16 @@ const siplog = () => {
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 📆 Last 7 Days: ${totalIntake.daily}ml  
 👉 ${riskMsg(intakePerKg.daily, "daily")}
+🧪 Health Score: ${dailyScore}/100
 
 📅 Last 12 Months: ${totalIntake.monthly}ml  
 👉 ${riskMsg(intakePerKg.monthly, "monthly")}
+🧪 Health Score: ${monthlyScore}/100
 
 📈 Last 6 Years: ${totalIntake.yearly}ml  
 👉 ${riskMsg(intakePerKg.yearly, "yearly")}
+🧪 Health Score: ${yearlyScore}/100
+
 `;
   };
 
