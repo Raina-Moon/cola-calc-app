@@ -6,15 +6,32 @@ import { profilePatch } from "./api/auth";
 const profile = () => {
   const [weight, setWeight] = useState(0);
   const [update, setUpdate] = useState(false);
+  const [error, setError] = useState("");
   const user = useAuthStore((state) => state.user);
   const updated = useAuthStore((state) => state.updateUser);
 
   const handleUpdate = async () => {
-    if (!user) return;
+    if (!validateWeight || !user) return;
 
     await updated({ ...user, weight });
     await profilePatch();
     setUpdate(false);
+  };
+
+  const validateWeight = (val: string) => {
+    const num = Number(val);
+
+    if (isNaN(num)) {
+      setError("Please enter a valid number");
+      return false;
+    }
+    if (num < 10 || num > 200) {
+      setError("Weight must be between 10 and 200");
+      return false;
+    }
+
+    setError("");
+    return true;
   };
 
   return (
@@ -27,8 +44,12 @@ const profile = () => {
           <TextInput
             keyboardType="numeric"
             value={String(weight)}
-            onChangeText={(val) => setWeight(Number(val))}
+            onChangeText={(val) => {
+              setWeight(Number(val));
+              validateWeight(val);
+            }}
           />
+          {error ? <Text>{error}</Text> : null}
           <TouchableOpacity onPress={handleUpdate}>
             <Text>Save</Text>
           </TouchableOpacity>
