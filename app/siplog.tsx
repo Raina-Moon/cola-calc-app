@@ -149,7 +149,7 @@ const siplog = () => {
 
 🥤 Cola Consumption Health Report (Type: ${selectedType.toUpperCase()})
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-📆 Last 7 Days: ${totalIntake.daily}ml  
+📅 Last 7 Days: ${totalIntake.daily}ml  
 👉 ${riskMsg(intakePerKg.daily, "daily")}
 🧪 Health Score: ${dailyScore}/100
 
@@ -157,7 +157,7 @@ const siplog = () => {
 👉 ${riskMsg(intakePerKg.monthly, "monthly")}
 🧪 Health Score: ${monthlyScore}/100
 
-📈 Last 6 Years: ${totalIntake.yearly}ml  
+📅 Last 6 Years: ${totalIntake.yearly}ml  
 👉 ${riskMsg(intakePerKg.yearly, "yearly")}
 🧪 Health Score: ${yearlyScore}/100
 
