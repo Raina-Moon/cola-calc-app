@@ -48,7 +48,7 @@ const siplog = () => {
     const today = new Date();
     const year = today.getFullYear();
     const newData = Array(12).fill(0);
-    
+
     for (let i = 0; i < 12; i++) {
       const date = new Date(year, i, 1);
       const colaType = selectedType === "original" ? "ORIGINAL" : "ZERO";
@@ -62,7 +62,7 @@ const siplog = () => {
     const thisYear = new Date().getFullYear();
     const newData = [];
     for (let i = 0; i < 6; i++) {
-      const date = new Date(thisYear -5 + i, 0, 1);
+      const date = new Date(thisYear - 5 + i, 0, 1);
       const colaType = selectedType === "original" ? "ORIGINAL" : "ZERO";
       const data = await getYearlyCola(date, colaType);
       newData.push(data);
@@ -89,7 +89,9 @@ const siplog = () => {
   }, [selectedPeriod, selectedType]);
 
   const thisYear = new Date().getFullYear();
-  const yearLabels = Array.from({ length: 6 }, (_, i) => String(thisYear -5 + i));
+  const yearLabels = Array.from({ length: 6 }, (_, i) =>
+    String(thisYear - 5 + i)
+  );
   return (
     <ScrollView keyboardShouldPersistTaps="handled">
       <Text>{userName}'s sip log</Text>
@@ -127,16 +129,16 @@ const siplog = () => {
             height={220}
             yAxisSuffix="ml"
             chartConfig={{
-              backgroundColor: "#fff",
-              backgroundGradientFrom: "#f8f8f8",
-              backgroundGradientTo: "#f8f8f8",
+              backgroundColor: "#4e4e4e",
+              color: (opacity = 1) => `rgba(255, 99, 99, ${opacity})`,
               decimalPlaces: 0,
-              color: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
-              labelColor: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
+              labelColor: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
+              fillShadowGradient: "#fd4242",
+              fillShadowGradientOpacity: 0.5,
               propsForDots: {
                 r: "4",
                 strokeWidth: "2",
-                stroke: "#b02828",
+                stroke: "#ec3838",
               },
             }}
             bezier
@@ -169,12 +171,10 @@ const siplog = () => {
             height={220}
             yAxisSuffix="ml"
             chartConfig={{
-              backgroundColor: "#fff",
-              backgroundGradientFrom: "#f8f8f8",
-              backgroundGradientTo: "#f8f8f8",
+              backgroundColor: "#202020",
               decimalPlaces: 0,
-              color: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
-              labelColor: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
+              color: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
+              labelColor: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
               propsForDots: {
                 r: "4",
                 strokeWidth: "2",
@@ -198,12 +198,10 @@ const siplog = () => {
             height={220}
             yAxisSuffix="ml"
             chartConfig={{
-              backgroundColor: "#fff",
-              backgroundGradientFrom: "#f8f8f8",
-              backgroundGradientTo: "#f8f8f8",
+              backgroundColor: "#202020",
               decimalPlaces: 0,
-              color: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
-              labelColor: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
+              color: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
+              labelColor: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
               propsForDots: {
                 r: "4",
                 strokeWidth: "2",
