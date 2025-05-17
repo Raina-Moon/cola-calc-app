@@ -1,13 +1,32 @@
-import React from "react";
-import { ActivityIndicator, StyleSheet, Text } from "react-native";
+import React, { useEffect, useRef } from "react";
+import { ActivityIndicator, Animated, StyleSheet, Text } from "react-native";
 import { Image, View } from "react-native";
 
 const Loading = () => {
+  const floatAnim = useRef(new Animated.Value(0)).current;
+
+  useEffect(() => {
+    Animated.loop(
+      Animated.sequence([
+        Animated.timing(floatAnim, {
+          toValue: -10,
+          duration: 800,
+          useNativeDriver: true,
+        }),
+        Animated.timing(floatAnim, {
+          toValue: 10,
+          duration: 800,
+          useNativeDriver: true,
+        }),
+      ])
+    ).start();
+  }, []);
+
   return (
     <View style={styles.container}>
-      <Image
+      <Animated.Image
         source={require(`../../assets/images/colafairy.png`)}
-        style={styles.image}
+        style={[styles.image, { transform: [{ translateY: floatAnim }] }]}
       />
       <Text style={styles.text}>Fetching your sip data...</Text>
       <ActivityIndicator
