@@ -34,6 +34,21 @@ export const login = async (name: string, birthday: string) => {
   return user;
 };
 
+export const profilePatch = async () => {
+  const user = useAuthStore.getState().user;
+  const res = await API.patch(`/user/${user?.id}`, {
+    weight: user?.weight,
+  });
+
+  if (res.status !== 200) {
+    throw new Error("Failed to update profile");
+  }
+
+  await useAuthStore.getState().updateUser(res.data);
+
+  return res.data;
+};
+
 export const refreshAccessToken = async () => {
   const refreshtoken = useAuthStore.getState().refreshToken;
 
