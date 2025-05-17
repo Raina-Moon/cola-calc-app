@@ -19,7 +19,7 @@ const siplog = () => {
   const [selectedType, setSelectedType] = useState("original");
   const [isLoading, setIsLoading] = useState(false);
 
-  const userName = useAuthStore((state) => state.user?.name);
+  const user = useAuthStore((state) => state.user);
 
   const fetchDailyData = async () => {
     setIsLoading(true);
@@ -75,6 +75,62 @@ const siplog = () => {
     setIsLoading(false);
   };
 
+  const totalIntake = {
+    daily: dailyData.reduce((acc, val) => acc + val, 0),
+    monthly: monthlyData.reduce((acc, val) => acc + val, 0),
+    yearly: yearlyData.reduce((acc, val) => acc + val, 0),
+  };
+
+  const intakePerKg = {
+    daily: totalIntake.daily / (user?.weight || 60),
+    monthly: totalIntake.monthly / (user?.weight || 60),
+    yearly: totalIntake.yearly / (user?.weight || 60),
+  };
+
+  const generateHealthReport = () => {
+    if (!user) return;
+    const riskMsgOriginal = (value: number, label: string) => {
+      if (value > 15) {
+        return `⚠️ Your ${label} intake of original cola is very high relative to your body weight. High sugar intake may increase your risk of diabetes, fatty liver, and obesity.`;
+      } else if (value > 10) {
+        return `🟠 Your ${label} intake is a bit high. Be cautious about potential weight gain and tooth decay.`;
+      } else if (value > 5) {
+        return `🟢 Your ${label} intake is moderate. Try to reduce it further for better health.`;
+      } else {
+        return `💚 Your ${label} intake is low. You're managing your health well—keep it up!`;
+      }
+    };
+
+    const riskMsgZero = (value: number, label: string) => {
+      if (value > 15) {
+        return `⚠️ Your ${label} intake of zero cola is quite high. While it contains no sugar, excessive intake of artificial sweeteners may impact kidney function or gut health.`;
+      } else if (value > 10) {
+        return `🟠 Your ${label} intake is relatively high. Watch out for potential effects on insulin sensitivity and appetite regulation.`;
+      } else if (value > 5) {
+        return `🟢 Your ${label} intake is within a safe range. Still, moderation is key with zero-sugar beverages.`;
+      } else {
+        return `💚 Your ${label} intake is low. Good job staying balanced!`;
+      }
+    };
+
+    const riskMsg = selectedType === "original" ? riskMsgOriginal : riskMsgZero;
+
+    return `
+👤 User: ${user.name} (${user.weight}kg)
+
+🥤 Cola Consumption Health Report (Type: ${selectedType.toUpperCase()})
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+📆 Last 7 Days: ${totalIntake.daily}ml  
+👉 ${riskMsg(intakePerKg.daily, "daily")}
+
+📅 Last 12 Months: ${totalIntake.monthly}ml  
+👉 ${riskMsg(intakePerKg.monthly, "monthly")}
+
+📈 Last 6 Years: ${totalIntake.yearly}ml  
+👉 ${riskMsg(intakePerKg.yearly, "yearly")}
+`;
+  };
+
   useEffect(() => {
     if (selectedPeriod === "daily") {
       fetchDailyData();
@@ -102,7 +158,7 @@ const siplog = () => {
 
   return (
     <View>
-      <Text>{userName}'s sip log</Text>
+      <Text>{user?.name}'s sip log</Text>
       <View>
         <DropDown
           selectedValue={selectedPeriod}
@@ -239,6 +295,10 @@ const siplog = () => {
             style={{ marginVertical: 20, borderRadius: 10 }}
           />
         )}
+      </View>
+      <View>
+        <Text>Health Report</Text>
+        <Text>{generateHealthReport()}</Text>
       </View>
     </View>
   );
