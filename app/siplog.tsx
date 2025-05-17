@@ -99,7 +99,7 @@ const siplog = () => {
     String(thisYear - 5 + i)
   );
   return (
-    <ScrollView keyboardShouldPersistTaps="handled">
+    <View>
       <Text>{userName}'s sip log</Text>
       <View>
         <DropDown
@@ -238,7 +238,7 @@ const siplog = () => {
           />
         )}
       </View>
-    </ScrollView>
+    </View>
   );
 };
 
