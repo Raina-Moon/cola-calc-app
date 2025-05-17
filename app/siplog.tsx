@@ -1,15 +1,10 @@
 import React, { useEffect, useState } from "react";
-import {
-  Dimensions,
-  ScrollView,
-  Text,
-  TouchableOpacity,
-  View,
-} from "react-native";
+import { Dimensions, Text, TouchableOpacity, View } from "react-native";
 import { useAuthStore } from "./store/authStore";
 import { LineChart } from "react-native-chart-kit";
 import { getDailyCola, getMonthlyCola, getYearlyCola } from "./api/cola";
 import DropDown from "./components/DropDown";
+import Loading from "./components/Loading";
 
 const screenWidth = Dimensions.get("window").width;
 
@@ -22,13 +17,12 @@ const siplog = () => {
     "daily" | "monthly" | "yearly"
   >("daily");
   const [selectedType, setSelectedType] = useState("original");
-  const [isOpen, setIsOpen] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
 
   const userName = useAuthStore((state) => state.user?.name);
 
-  const isClose = () => setIsOpen(false);
-
   const fetchDailyData = async () => {
+    setIsLoading(true);
     const today = new Date();
     const start = new Date(today);
     start.setDate(today.getDate() - 6);
@@ -44,9 +38,11 @@ const siplog = () => {
     setDailyData(
       newData.map((val) => (typeof val === "number" && isFinite(val) ? val : 0))
     );
+    setIsLoading(false);
   };
 
   const fetchMonthlyData = async () => {
+    setIsLoading(true);
     const today = new Date();
     const year = today.getFullYear();
     const newData = Array(12).fill(0);
@@ -60,9 +56,11 @@ const siplog = () => {
     setMonthlyData(
       newData.map((val) => (typeof val === "number" && isFinite(val) ? val : 0))
     );
+    setIsLoading(false);
   };
 
   const fetchYearlyData = async () => {
+    setIsLoading(true);
     const thisYear = new Date().getFullYear();
     const newData = [];
     for (let i = 0; i < 6; i++) {
@@ -74,6 +72,7 @@ const siplog = () => {
     setYearlyData(
       newData.map((val) => (typeof val === "number" && isFinite(val) ? val : 0))
     );
+    setIsLoading(false);
   };
 
   useEffect(() => {
@@ -98,6 +97,9 @@ const siplog = () => {
   const yearLabels = Array.from({ length: 6 }, (_, i) =>
     String(thisYear - 5 + i)
   );
+
+  if (isLoading) return <Loading />;
+
   return (
     <View>
       <Text>{userName}'s sip log</Text>
