@@ -41,7 +41,9 @@ const siplog = () => {
       const data = await getDailyCola(date, colaType);
       newData.push(data);
     }
-    setDailyData(newData);
+    setDailyData(
+      newData.map((val) => (typeof val === "number" && isFinite(val) ? val : 0))
+    );
   };
 
   const fetchMonthlyData = async () => {
@@ -55,7 +57,9 @@ const siplog = () => {
       const data = await getMonthlyCola(date, colaType);
       newData[i] = data;
     }
-    setMonthlyData(newData);
+    setMonthlyData(
+      newData.map((val) => (typeof val === "number" && isFinite(val) ? val : 0))
+    );
   };
 
   const fetchYearlyData = async () => {
@@ -67,7 +71,9 @@ const siplog = () => {
       const data = await getYearlyCola(date, colaType);
       newData.push(data);
     }
-    setYearlyData(newData);
+    setYearlyData(
+      newData.map((val) => (typeof val === "number" && isFinite(val) ? val : 0))
+    );
   };
 
   useEffect(() => {
@@ -121,11 +127,11 @@ const siplog = () => {
               labels: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
               datasets: [
                 {
-                  data: dailyData,
+                  data: dailyData.length === 7 ? dailyData : Array(7).fill(0),
                 },
               ],
             }}
-            width={screenWidth - 30}
+            width={isFinite(screenWidth - 30) ? screenWidth - 30 : 300}
             height={220}
             yAxisSuffix="ml"
             chartConfig={{
@@ -165,9 +171,9 @@ const siplog = () => {
                 "Nov",
                 "Dec",
               ],
-              datasets: [{ data: monthlyData }],
+              datasets: [{ data: monthlyData.length === 12 ? monthlyData : Array(12).fill(0) }],
             }}
-            width={screenWidth - 30}
+            width={isFinite(screenWidth - 30) ? screenWidth - 30 : 300}
             height={220}
             yAxisSuffix="ml"
             chartConfig={{
@@ -192,9 +198,9 @@ const siplog = () => {
           <LineChart
             data={{
               labels: yearLabels,
-              datasets: [{ data: yearlyData }],
+              datasets: [{ data: yearlyData.length === 6 ? yearlyData : Array(6).fill(0) }],
             }}
-            width={screenWidth - 30}
+            width={isFinite(screenWidth - 30) ? screenWidth - 30 : 300}
             height={220}
             yAxisSuffix="ml"
             chartConfig={{
