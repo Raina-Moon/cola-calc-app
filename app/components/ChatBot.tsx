@@ -1,9 +1,17 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useAuthStore } from "../store/authStore";
 import { caculateMaxCola } from "@/utils/calculator";
 import { useChatFlow } from "../store/useChatFlow";
-import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import {
+  Animated,
+  Image,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
 import { getDailyCola } from "../api/cola";
+import { transform } from "@babel/core";
 
 interface Props {
   sum: number;
@@ -19,6 +27,9 @@ const ChatBot = ({ sum, filter }: Props) => {
   );
   const overLimit = dailyData.filter((data) => data > max).length >= 3;
   const isLate = new Date().getHours() >= 22;
+
+  const bubbleAnim = useRef(new Animated.Value(30)).current;
+  const opacityAnim = useRef(new Animated.Value(0)).current;
 
   useEffect(() => {
     const fetchWeekly = async () => {
@@ -39,6 +50,21 @@ const ChatBot = ({ sum, filter }: Props) => {
     fetchWeekly();
   }, [filter]);
 
+  useEffect(() => {
+    Animated.parallel([
+      Animated.timing(bubbleAnim, {
+        toValue: 0,
+        duration: 600,
+        useNativeDriver: true,
+      }),
+      Animated.timing(opacityAnim, {
+        toValue: 1,
+        duration: 600,
+        useNativeDriver: true,
+      }),
+    ]).start();
+  }, []);
+
   const { message, option, setStep } = useChatFlow({
     sum,
     max: Math.floor(max),
@@ -51,6 +77,11 @@ const ChatBot = ({ sum, filter }: Props) => {
       : "",
   });
 
+  const getOptionColor = (idx: number) => {
+    const colors = ["#fe4a4a", "#fe7676", "#ff9f9f"];
+    return colors[idx];
+  };
+
   return (
     <View style={styles.container}>
       <View style={styles.chatRow}>
@@ -58,20 +89,29 @@ const ChatBot = ({ sum, filter }: Props) => {
           source={require(`../../assets/images/colafairy.png`)}
           style={styles.fairy}
         />
-        <View style={styles.bubble}>
+        <Animated.View
+          style={[
+            styles.bubbleLeft,
+            { transform: [{ translateY: bubbleAnim }], opacity: opacityAnim },
+          ]}
+        >
           <Text style={styles.message}>{message}</Text>
-        </View>
-        <View style={styles.options}>
-          {option.map((item, idx) => (
+        </Animated.View>
+      </View>
+      <View style={styles.chatRowUser}>
+        {option.map((item, idx) => (
+          <Animated.View style={[{ transform: [{ translateY: bubbleAnim }], opacity: opacityAnim }]} key={idx}>
             <TouchableOpacity
-              key={idx}
               onPress={() => setStep(item.next)}
-              style={styles.optionButton}
+              style={[
+                styles.optionButton,
+                { backgroundColor: getOptionColor(idx) },
+              ]}
             >
               <Text style={styles.optionText}>{item.text}</Text>
             </TouchableOpacity>
-          ))}
-        </View>
+          </Animated.View>
+        ))}
       </View>
     </View>
   );
@@ -81,10 +121,11 @@ export default ChatBot;
 
 const styles = StyleSheet.create({
   container: {
-    padding: 12,
-    borderTopWidth: 1,
-    borderColor: "#ccc",
+    padding: 15,
+    borderWidth: 1,
+    borderColor: "#fd8e8e",
     backgroundColor: "#fff",
+    borderRadius: 12,
   },
   chatRow: {
     flexDirection: "row",
@@ -96,29 +137,31 @@ const styles = StyleSheet.create({
     height: 48,
     marginRight: 10,
   },
-  bubble: {
-    backgroundColor: "#f0f0f0",
-    borderRadius: 12,
-    padding: 10,
-    flexShrink: 1,
-  },
   message: {
-    fontSize: 14,
+    fontSize: 18,
     color: "#333",
-  },
-  options: {
-    flexDirection: "column",
-    gap: 6,
+    fontFamily: "Jersey15_400Regular",
   },
   optionButton: {
-    backgroundColor: "#eee",
     padding: 10,
     borderRadius: 8,
     marginTop: 4,
   },
   optionText: {
-    fontSize: 14,
+    fontSize: 18,
     textAlign: "center",
     color: "#000",
+    fontFamily: "Jersey15_400Regular",
+  },
+  chatRowUser: {
+    alignItems: "flex-end",
+    gap: 6,
+    marginTop: 8,
+  },
+  bubbleLeft: {
+    paddingVertical: 10,
+    paddingHorizontal: 12,
+    borderRadius: 12,
+    marginVertical: 4,
   },
 });
