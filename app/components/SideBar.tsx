@@ -64,7 +64,7 @@ const SideBar = ({ onClose }: Props) => {
             onPress={() => handleSelect(item.id)}
             style={{
               color: "#fff",
-              fontSize: 18,
+              fontSize: 22,
               marginTop: 40,
               fontFamily: "Jersey15_400Regular",
             }}
