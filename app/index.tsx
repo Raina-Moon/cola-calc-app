@@ -21,7 +21,7 @@ export default function Index() {
   const bubbleId = useRef(0);
   const router = useRouter();
 
-  const user = useAuthStore((state) => state.user)
+  const user = useAuthStore((state) => state.user);
 
   useEffect(() => {
     const startAnimation = async () => {
@@ -33,7 +33,6 @@ export default function Index() {
         await SplashScreen.hideAsync();
         setReady(true);
 
-
         setTimeout(() => {
           if (user) {
             router.replace("/home");
@@ -44,7 +43,7 @@ export default function Index() {
       });
     };
     startAnimation();
-  }, [user,router]);
+  }, [user, router]);
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -119,6 +118,7 @@ const styles = StyleSheet.create({
     overflow: "hidden",
     justifyContent: "center",
     alignContent: "center",
+    backgroundColor: "#fff",
   },
   logo: {
     width: 300,
