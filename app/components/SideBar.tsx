@@ -44,35 +44,49 @@ const SideBar = ({ onClose }: Props) => {
     { id: "logout", name: "Logout" },
   ];
   return (
-    <View>
-      <TouchableOpacity onPress={() => router.replace("/profile")}>
-        <Text
-          style={{
-            color: "#fff",
-            fontSize: 26,
-            fontFamily: "Jersey15_400Regular",
-            marginTop: 80,
-          }}
-        >
-          Hi!
-          <Text style={{ textDecorationLine: "underline" }}> {userName}</Text>
-        </Text>
-      </TouchableOpacity>
-      {itemList.map((item) => (
-        <View key={item.id}>
+    <View style={{ flex: 1 }}>
+      <View style={{ flex: 1 }}>
+        <TouchableOpacity onPress={() => router.replace("/profile")}>
           <Text
-            onPress={() => handleSelect(item.id)}
             style={{
               color: "#fff",
-              fontSize: 22,
-              marginTop: 40,
+              fontSize: 26,
               fontFamily: "Jersey15_400Regular",
+              marginTop: 80,
             }}
           >
-            {item.name}
+            Hi!
+            <Text style={{ textDecorationLine: "underline" }}> {userName}</Text>
           </Text>
-        </View>
-      ))}
+        </TouchableOpacity>
+        {itemList.map((item) => (
+          <View key={item.id}>
+            <Text
+              onPress={() => handleSelect(item.id)}
+              style={{
+                color: "#fff",
+                fontSize: 22,
+                marginTop: 40,
+                fontFamily: "Jersey15_400Regular",
+              }}
+            >
+              {item.name}
+            </Text>
+          </View>
+        ))}
+      </View>
+
+      <Text
+        style={{
+          color: "#fff",
+          fontSize: 16,
+          marginTop: 40,
+          fontFamily: "Jersey15_400Regular",
+          textAlign: "justify",
+        }}
+      >
+        @made by Raina
+      </Text>
 
       {openModal && (
         <Modal
