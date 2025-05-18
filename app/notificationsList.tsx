@@ -1,7 +1,14 @@
 import React, { useEffect } from "react";
-import { ScrollView, Text, TouchableOpacity, View } from "react-native";
+import {
+  ScrollView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
 import { useNotificationStore } from "./store/notificationStore";
 import { getNotification, markNotifAsRead } from "./api/notification";
+import { FontAwesome } from "@expo/vector-icons";
 
 const notificationsList = () => {
   const notif = useNotificationStore((state) => state.notifications);
@@ -21,19 +28,9 @@ const notificationsList = () => {
   }, []);
 
   return (
-    <ScrollView>
+    <ScrollView style={styles.container}>
       {notif.length === 0 ? (
-        <Text
-          style={{
-            textAlign: "center",
-            marginVertical: 20,
-            fontSize: 18,
-            color: "#141414",
-            fontFamily: "Jersey15_400Regular",
-          }}
-        >
-          No notifications yet!
-        </Text>
+        <Text style={styles.emptyText}>No notifications yet!</Text>
       ) : (
         notif.map((notification) => (
           <TouchableOpacity
@@ -47,18 +44,21 @@ const notificationsList = () => {
                 alert("Failed to mark notification as read");
               }
             }}
+            style={[
+              styles.notificationCard,
+              notification.isRead ? styles.read : styles.unread,
+            ]}
+            activeOpacity={0.8}
           >
-            <View
-              style={{
-                backgroundColor: notification.isRead ? "#f0f0f0" : "#fff",
-                padding: 10,
-                marginVertical: 5,
-                borderRadius: 5,
-              }}
-            >
-              <Text style={{ fontFamily: "Jersey15_400Regular" }}>
-                {notification.message}
-              </Text>
+            <View style={styles.iconWrapper}>
+              <FontAwesome
+                name={notification.isRead ? "check-circle" : "bell"}
+                size={20}
+                color={notification.isRead ? "#999" : "#ff4d4d"}
+              />
+            </View>
+            <View style={styles.textWrapper}>
+              <Text style={styles.messageText}>{notification.message}</Text>
             </View>
           </TouchableOpacity>
         ))
@@ -68,3 +68,47 @@ const notificationsList = () => {
 };
 
 export default notificationsList;
+
+const styles = StyleSheet.create({
+  container: {
+    padding: 16,
+  },
+  emptyText: {
+    textAlign: "center",
+    marginTop: 40,
+    fontSize: 18,
+    color: "#999",
+    fontFamily: "Jersey15_400Regular",
+  },
+  notificationCard: {
+    flexDirection: "row",
+    alignItems: "flex-start",
+    padding: 12,
+    marginBottom: 10,
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: "#ddd",
+    shadowColor: "#000",
+    shadowOpacity: 0.05,
+    shadowRadius: 5,
+    backgroundColor: "#fff",
+  },
+  unread: {
+    backgroundColor: "#ffecec",
+  },
+  read: {
+    backgroundColor: "#f5f5f5",
+  },
+  iconWrapper: {
+    marginRight: 12,
+    marginTop: 4,
+  },
+  textWrapper: {
+    flex: 1,
+  },
+  messageText: {
+    fontSize: 16,
+    color: "#333",
+    fontFamily: "Jersey15_400Regular",
+  },
+});
