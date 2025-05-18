@@ -108,7 +108,7 @@ export default function Signup() {
       >
         <ScrollView
           keyboardShouldPersistTaps="handled"
-          contentContainerStyle={[styles.scrollContent,{ flexGrow: 1 }]}
+          contentContainerStyle={[styles.scrollContent, { flexGrow: 1 }]}
         >
           <Text style={styles.title}>You sip. We sense.</Text>
           <Text style={styles.subtitle}>
@@ -222,7 +222,11 @@ export default function Signup() {
             <Text style={styles.errorText}>{errorMessage}</Text>
           ) : null}
           <TouchableOpacity onPress={() => router.replace("/login")}>
-            <Text style={{ color: "#141414" }}>Already Have Account?</Text>
+            <Text
+              style={{ color: "#141414", fontFamily: "Jersey15_400Regular" }}
+            >
+              Already Have Account?
+            </Text>
           </TouchableOpacity>
         </ScrollView>
       </KeyboardAvoidingView>
@@ -247,6 +251,7 @@ const styles = StyleSheet.create({
     marginLeft: "10%",
     marginBottom: 8,
     marginTop: 10,
+    fontFamily: "Jersey15_400Regular",
   },
   input: {
     width: "80%",
@@ -272,6 +277,7 @@ const styles = StyleSheet.create({
     color: "#141414",
     alignSelf: "flex-start",
     marginLeft: "5%",
+    fontFamily: "Jersey15_400Regular",
   },
   birthdayInput: {
     width: "90%",
@@ -281,6 +287,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
     textAlign: "center",
     color: "#141414",
+    fontFamily: "Jersey15_400Regular",
   },
   errorText: {
     color: "#ff0000",
@@ -288,6 +295,7 @@ const styles = StyleSheet.create({
     alignSelf: "flex-start",
     marginLeft: "10%",
     marginTop: 3,
+    fontFamily: "Jersey15_400Regular",
   },
   button: {
     backgroundColor: "#ee0202",
@@ -303,6 +311,7 @@ const styles = StyleSheet.create({
     fontWeight: "600",
     fontSize: 16,
     textAlign: "center",
+    fontFamily: "Jersey15_400Regular",
   },
   title: {
     fontSize: 24,
@@ -310,11 +319,13 @@ const styles = StyleSheet.create({
     color: "#141414",
     textAlign: "center",
     marginBottom: 4,
+    fontFamily: "Jersey15_400Regular",
   },
   subtitle: {
     fontSize: 14,
     color: "#555",
     textAlign: "center",
     marginBottom: 24,
+    fontFamily: "Jersey15_400Regular",
   },
 });
