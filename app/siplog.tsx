@@ -25,6 +25,12 @@ const siplog = () => {
   >("daily");
   const [selectedType, setSelectedType] = useState("original");
   const [isLoading, setIsLoading] = useState(false);
+  const [tooltipPos, setTooltipPos] = useState({
+    x: 0,
+    y: 0,
+    value: 0,
+    visible: false,
+  });
 
   const user = useAuthStore((state) => state.user);
 
@@ -233,7 +239,7 @@ const siplog = () => {
           })}
         </View>
 
-        <View>
+        <View style={{ position: "relative" }}>
           {selectedPeriod === "daily" && (
             <LineChart
               data={{
@@ -264,6 +270,30 @@ const siplog = () => {
               }}
               bezier
               style={{ marginVertical: 20, borderRadius: 10 }}
+              onDataPointClick={({ value, x, y }) => {
+                setTooltipPos({ x, y, value, visible: true });
+              }}
+              decorator={() => {
+                return tooltipPos.visible ? (
+                  <View
+                    style={{
+                      position: "absolute",
+                      top: tooltipPos.y - 40,
+                      left: tooltipPos.x - 30,
+                      backgroundColor: "#fff",
+                      paddingHorizontal: 8,
+                      paddingVertical: 4,
+                      borderRadius: 6,
+                      borderWidth: 1,
+                      borderColor: "#ccc",
+                    }}
+                  >
+                    <Text style={{ fontSize: 12, fontWeight: "bold" }}>
+                      {tooltipPos.value}ml
+                    </Text>
+                  </View>
+                ) : null;
+              }}
             />
           )}
         </View>
@@ -315,6 +345,30 @@ const siplog = () => {
               }}
               bezier
               style={{ marginVertical: 20, borderRadius: 10 }}
+              onDataPointClick={({ value, x, y }) => {
+                setTooltipPos({ x, y, value, visible: true });
+              }}
+              decorator={() => {
+                return tooltipPos.visible ? (
+                  <View
+                    style={{
+                      position: "absolute",
+                      top: tooltipPos.y - 40,
+                      left: tooltipPos.x - 30,
+                      backgroundColor: "#fff",
+                      paddingHorizontal: 8,
+                      paddingVertical: 4,
+                      borderRadius: 6,
+                      borderWidth: 1,
+                      borderColor: "#ccc",
+                    }}
+                  >
+                    <Text style={{ fontSize: 12, fontWeight: "bold" }}>
+                      {tooltipPos.value}ml
+                    </Text>
+                  </View>
+                ) : null;
+              }}
             />
           )}
         </View>
@@ -351,8 +405,34 @@ const siplog = () => {
               }}
               bezier
               style={{ marginVertical: 20, borderRadius: 10 }}
+              onDataPointClick={({ value, x, y }) => {
+                setTooltipPos({ x, y, value, visible: true });
+              }}
+              decorator={() => {
+                return tooltipPos.visible ? (
+                  <View
+                    style={{
+                      position: "absolute",
+                      top: tooltipPos.y - 40,
+                      left: tooltipPos.x - 30,
+                      backgroundColor: "#fff",
+                      paddingHorizontal: 8,
+                      paddingVertical: 4,
+                      borderRadius: 6,
+                      borderWidth: 1,
+                      borderColor: "#ccc",
+                    }}
+                  >
+                    <Text style={{ fontSize: 12, fontWeight: "bold" }}>
+                      {tooltipPos.value}ml
+                    </Text>
+                  </View>
+                ) : null;
+              }}
             />
           )}
+
+          
         </View>
         <View style={styles.card}>
           <Text style={styles.cardTitle}>Health Report</Text>
