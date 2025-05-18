@@ -35,6 +35,7 @@ const SideBar = ({ onClose }: Props) => {
     await logout();
     setOpenModal(false);
     router.replace("/login");
+    onClose();
   };
 
   const itemList = [
