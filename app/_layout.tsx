@@ -1,9 +1,22 @@
-import { Stack } from "expo-router";
+import { Stack, useRouter } from "expo-router";
 import { useGlobalLoadingStore } from "./store/useGlobalLoadingStore ";
-import { ActivityIndicator, View } from "react-native";
+import {
+  ActivityIndicator,
+  Animated,
+  Dimensions,
+  StyleSheet,
+  TouchableOpacity,
+  View,
+} from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 import { useEffect, useState } from "react";
 import { useAuthStore } from "./store/authStore";
-import { useFonts as useJersey, Jersey15_400Regular } from "@expo-google-fonts/jersey-15";
+import {
+  useFonts as useJersey,
+  Jersey15_400Regular,
+} from "@expo-google-fonts/jersey-15";
+import SideBar from "./components/SideBar";
+import TopBar from "./components/TopBar";
 
 const initializingUseAuth = () => {
   const [ready, setReady] = useState(false);
@@ -47,12 +60,34 @@ const GlobalLoading = () => {
   );
 };
 
+const { width } = Dimensions.get("window");
+
 export default function RootLayout() {
+  const [sideBarVisible, setSideBarVisible] = useState(false);
+  const slideAnim = new Animated.Value(-300);
+  const rotuer = useRouter();
+
   const isReady = initializingUseAuth();
 
+  useEffect(() => {
+    if (sideBarVisible) {
+      Animated.timing(slideAnim, {
+        toValue: 0,
+        duration: 300,
+        useNativeDriver: false,
+      }).start();
+    } else {
+      Animated.timing(slideAnim, {
+        toValue: -width * 0.8,
+        duration: 300,
+        useNativeDriver: false,
+      }).start();
+    }
+  }, [sideBarVisible]);
+
   const [jerseyLoaded] = useJersey({
-    Jersey15_400Regular
-  })
+    Jersey15_400Regular,
+  });
   if (!isReady || !jerseyLoaded) {
     return (
       <View
@@ -70,8 +105,52 @@ export default function RootLayout() {
 
   return (
     <>
-      <Stack />
-      <GlobalLoading />
+      <View style={{ flex: 1, backgroundColor: "#fff" }}>
+        <SafeAreaView edges={["top"]}>
+          <TopBar onMenuPress={() => setSideBarVisible((prev) => !prev)} />
+        </SafeAreaView>
+        <View style={{ flex: 1 }}>
+          <Stack />
+        </View>
+
+        {sideBarVisible && (
+          <TouchableOpacity
+            activeOpacity={1}
+            onPress={() => setSideBarVisible(false)}
+            style={styles.overlay}
+          >
+            <Animated.View
+              style={[
+                styles.sideBarBox,
+                { transform: [{ translateX: slideAnim }] },
+              ]}
+            >
+              <SideBar onClose={() => setSideBarVisible(false)} />
+            </Animated.View>
+          </TouchableOpacity>
+        )}
+        <GlobalLoading />
+      </View>
     </>
   );
 }
+
+const styles = StyleSheet.create({
+  overlay: {
+    position: "absolute",
+    top: 0,
+    left: 0,
+    width: "100%",
+    height: "100%",
+    backgroundColor: "rgba(0,0,0,0.5)",
+    justifyContent: "flex-start",
+    alignItems: "flex-start",
+    zIndex: 20,
+  },
+  sideBarBox: {
+    width: "45%",
+    height: "100%",
+    backgroundColor: "#de0000",
+    padding: 20,
+  },
+});
