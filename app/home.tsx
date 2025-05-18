@@ -85,7 +85,15 @@ const home = () => {
   return (
     <ScrollView contentContainerStyle={styles.container}>
       <View>
-        <Text style={{fontFamily:"Jersey15_400Regular"}}>You Drank {sum} ml of Cola Today!</Text>
+        <Text
+          style={{
+            fontFamily: "Jersey15_400Regular",
+            fontSize: 24,
+            textAlign: "center",
+          }}
+        >
+          You Drank {sum} ml of Cola Today!
+        </Text>
         <View style={styles.barContainer}>
           <Animated.View
             style={[
@@ -128,8 +136,7 @@ const home = () => {
         ))}
       </View>
 
-      <ChatBot sum={sum} filter={filter}/>
-      
+      <ChatBot sum={sum} filter={filter} />
     </ScrollView>
   );
 };
@@ -141,12 +148,14 @@ const styles = StyleSheet.create({
     flex: 1,
     overflow: "hidden",
     alignContent: "center",
+    padding: 20,
+    backgroundColor: "#fff",
   },
   buttonContainer: {
     flexWrap: "wrap",
     flexDirection: "row",
     justifyContent: "space-between",
-    marginTop: 20,
+    marginBottom: 40,
   },
   button: {
     width: 60,
@@ -164,6 +173,7 @@ const styles = StyleSheet.create({
     display: "flex",
     flexDirection: "row",
     justifyContent: "space-evenly",
+    marginBottom: 40,
   },
   filterButton: {
     padding: 10,
@@ -175,6 +185,7 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: "bold",
     color: "#fff",
+    fontFamily: "Jersey15_400Regular",
   },
   barContainer: {
     width: "80%",
@@ -185,24 +196,20 @@ const styles = StyleSheet.create({
     overflow: "hidden",
     backgroundColor: "#fff",
     alignSelf: "center",
+    marginTop: 20,
+    marginBottom: 20,
   },
   filledBar: {
     height: "100%",
-    backgroundColor: "#b02828",
+    backgroundColor: "#fd3333",
     position: "absolute",
     flexDirection: "row",
   },
-  bubble: {
-    width: 8,
-    height: 8,
-    backgroundColor: "white",
-    borderRadius: 4,
-    position: "absolute",
-  },
   maxText: {
-    fontSize: 16,
+    fontSize: 20,
     textAlign: "center",
     marginTop: 10,
-    color: "#333",
+    color: "#0c0c0c",
+    fontFamily: "Jersey15_400Regular",
   },
 });
