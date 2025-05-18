@@ -12,9 +12,6 @@ import {
 import { useAuthStore } from "./store/authStore";
 import { caculateMaxCola } from "@/utils/calculator";
 import { getDailyCola, postCola } from "./api/cola";
-import { Ionicons } from "@expo/vector-icons";
-import SideBar from "./components/SideBar";
-import { useRouter } from "expo-router";
 import ChatBot from "./components/ChatBot";
 
 type FilterType = "original" | "zero";
