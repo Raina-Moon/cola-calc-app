@@ -204,10 +204,10 @@ const siplog = () => {
 
       <View>
         <TouchableOpacity onPress={() => setSelectedType("original")}>
-          <Text>Original</Text>
+          <Text style={{ fontFamily: "Jersey15_400Regular" }}>Original</Text>
         </TouchableOpacity>
         <TouchableOpacity onPress={() => setSelectedType("zero")}>
-          <Text>Zero</Text>
+          <Text style={{ fontFamily: "Jersey15_400Regular" }}>Zero</Text>
         </TouchableOpacity>
       </View>
 
@@ -330,8 +330,10 @@ const siplog = () => {
         )}
       </View>
       <View>
-        <Text>Health Report</Text>
-        <Text>{generateHealthReport()}</Text>
+        <Text style={{ fontFamily: "Jersey15_400Regular" }}>Health Report</Text>
+        <Text style={{ fontFamily: "Jersey15_400Regular" }}>
+          {generateHealthReport()}
+        </Text>
       </View>
     </View>
   );

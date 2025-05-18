@@ -110,7 +110,7 @@ const home = () => {
         <Ionicons name="notifications" size={30} color="#000" />
       </TouchableOpacity>
       <View>
-        <Text>You Drank {sum} ml of Cola Today!</Text>
+        <Text style={{fontFamily:"Jersey15_400Regular"}}>You Drank {sum} ml of Cola Today!</Text>
         <View style={styles.barContainer}>
           <Animated.View
             style={[
