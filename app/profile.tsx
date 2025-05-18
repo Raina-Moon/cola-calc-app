@@ -8,6 +8,7 @@ import {
 } from "react-native";
 import { useAuthStore } from "./store/authStore";
 import { profilePatch } from "./api/auth";
+import { useGlobalLoadingStore } from "./store/useGlobalLoadingStore ";
 
 const profile = () => {
   const [weight, setWeight] = useState(0);
@@ -15,13 +16,15 @@ const profile = () => {
   const [error, setError] = useState("");
   const user = useAuthStore((state) => state.user);
   const updated = useAuthStore((state) => state.updateUser);
+  const setLoading = useGlobalLoadingStore((state) => state.setLoading);
 
   const handleUpdate = async () => {
     if (!validateWeight || !user) return;
-
+    setLoading(true);
     await updated({ ...user, weight });
     await profilePatch();
     setUpdate(false);
+    setLoading(false);
   };
 
   const validateWeight = (val: string) => {

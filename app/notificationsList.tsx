@@ -9,19 +9,24 @@ import {
 import { useNotificationStore } from "./store/notificationStore";
 import { getNotification, markNotifAsRead } from "./api/notification";
 import { FontAwesome } from "@expo/vector-icons";
+import { useGlobalLoadingStore } from "./store/useGlobalLoadingStore ";
 
 const notificationsList = () => {
   const notif = useNotificationStore((state) => state.notifications);
   const isRead = useNotificationStore((state) => state.markAsRead);
   const setNotif = useNotificationStore.setState;
+  const setLoading = useGlobalLoadingStore((state) => state.setLoading);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
+        setLoading(true);
         const data = await getNotification();
         setNotif(data);
       } catch (err) {
         console.error(err);
+      } finally {
+        setLoading(false);
       }
     };
     fetchData();

@@ -3,11 +3,13 @@ import React, { useEffect, useState } from "react";
 import { StyleSheet, Switch, Text, View } from "react-native";
 import { useAuthStore } from "./store/authStore";
 import { toggleNotif } from "./api/notification";
+import { useGlobalLoadingStore } from "./store/useGlobalLoadingStore ";
 
 const settings = () => {
   const [enabled, setEnabled] = useState(true);
   const user = useAuthStore((state) => state.user);
   const updated = useAuthStore((state) => state.updateUser);
+  const setLoading = useGlobalLoadingStore((state) => state.setLoading);
 
   useEffect(() => {
     if (user) {
@@ -18,12 +20,15 @@ const settings = () => {
   const toggleSwitch = async (val: boolean) => {
     if (!user) return;
     try {
+      setLoading(true);
       const updatedUser = await toggleNotif(user.id, val);
       updated(updatedUser);
       setEnabled(val);
     } catch (error) {
       console.error("Error toggling notification:", error);
       alert("Failed to update notification settings");
+    } finally {
+      setLoading(false);
     }
   };
 
