@@ -1,5 +1,12 @@
 import React, { useEffect, useState } from "react";
-import { Dimensions, Text, TouchableOpacity, View } from "react-native";
+import {
+  Dimensions,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
 import { useAuthStore } from "./store/authStore";
 import { LineChart } from "react-native-chart-kit";
 import { getDailyCola, getMonthlyCola, getYearlyCola } from "./api/cola";
@@ -18,6 +25,12 @@ const siplog = () => {
   >("daily");
   const [selectedType, setSelectedType] = useState("original");
   const [isLoading, setIsLoading] = useState(false);
+  const [tooltipPos, setTooltipPos] = useState({
+    x: 0,
+    y: 0,
+    value: 0,
+    visible: false,
+  });
 
   const user = useAuthStore((state) => state.user);
 
@@ -131,37 +144,58 @@ const siplog = () => {
     };
 
     const riskMsgZero = (value: number, label: string) => {
-      if (value > 15) {
-        return `⚠️ Your ${label} intake of zero cola is quite high. While it contains no sugar, excessive intake of artificial sweeteners may impact kidney function or gut health.`;
-      } else if (value > 10) {
-        return `🟠 Your ${label} intake is relatively high. Watch out for potential effects on insulin sensitivity and appetite regulation.`;
-      } else if (value > 5) {
-        return `🟢 Your ${label} intake is within a safe range. Still, moderation is key with zero-sugar beverages.`;
-      } else {
-        return `💚 Your ${label} intake is low. Good job staying balanced!`;
-      }
+      if (value > 15)
+        return `⚠️ ${label} intake is high. Watch out for sweeteners.`;
+      if (value > 10) return `🟠 ${label} intake is a bit high.`;
+      if (value > 5) return `🟢 ${label} intake is okay.`;
+      return `💚 ${label} intake is low.`;
     };
 
     const riskMsg = selectedType === "original" ? riskMsgOriginal : riskMsgZero;
 
-    return `
-👤 User: ${user.name} (${user.weight}kg)
+    return (
+      <View style={styles.card}>
 
-🥤 Cola Consumption Health Report (Type: ${selectedType.toUpperCase()})
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-📅 Last 7 Days: ${totalIntake.daily}ml  
-👉 ${riskMsg(intakePerKg.daily, "daily")}
-🧪 Health Score: ${dailyScore}/100
+        {selectedPeriod === "daily" && (
+          <>
+            <Text style={styles.reportText}>
+              📅 Last 7 Days: {totalIntake.daily}ml
+            </Text>
+            <Text style={styles.reportText}>
+              👉 {riskMsg(intakePerKg.daily, "Daily")}
+            </Text>
+            <Text style={styles.reportText}>🧪 Score: {dailyScore}/100</Text>
+            <View style={styles.divider} />
+          </>
+        )}
 
-📅 Last 12 Months: ${totalIntake.monthly}ml  
-👉 ${riskMsg(intakePerKg.monthly, "monthly")}
-🧪 Health Score: ${monthlyScore}/100
+        {selectedPeriod === "monthly" && (
+          <>
+            <Text style={styles.reportText}>
+              📅 Last 12 Months: {totalIntake.monthly}ml
+            </Text>
+            <Text style={styles.reportText}>
+              👉 {riskMsg(intakePerKg.monthly, "Monthly")}
+            </Text>
+            <Text style={styles.reportText}>🧪 Score: {monthlyScore}/100</Text>
+            <View style={styles.divider} />
+          </>
+        )}
 
-📅 Last 6 Years: ${totalIntake.yearly}ml  
-👉 ${riskMsg(intakePerKg.yearly, "yearly")}
-🧪 Health Score: ${yearlyScore}/100
-
-`;
+        {selectedPeriod === "yearly" && (
+          <>
+            <Text style={styles.reportText}>
+              📅 Last 6 Years: {totalIntake.yearly}ml
+            </Text>
+            <Text style={styles.reportText}>
+              👉 {riskMsg(intakePerKg.yearly, "Yearly")}
+            </Text>
+            <Text style={styles.reportText}>🧪 Score: {yearlyScore}/100</Text>
+            <View style={styles.divider} />
+          </>
+        )}
+      </View>
+    );
   };
 
   useEffect(() => {
@@ -190,153 +224,312 @@ const siplog = () => {
   if (isLoading) return <Loading />;
 
   return (
-    <View>
-      <Text>{user?.name}'s sip log</Text>
-      <View>
-        <DropDown
-          selectedValue={selectedPeriod}
-          options={["daily", "monthly", "yearly"]}
-          onSelect={(val) =>
-            setSelectedPeriod(val as "daily" | "monthly" | "yearly")
-          }
-        />
-      </View>
-
-      <View>
-        <TouchableOpacity onPress={() => setSelectedType("original")}>
-          <Text style={{ fontFamily: "Jersey15_400Regular" }}>Original</Text>
-        </TouchableOpacity>
-        <TouchableOpacity onPress={() => setSelectedType("zero")}>
-          <Text style={{ fontFamily: "Jersey15_400Regular" }}>Zero</Text>
-        </TouchableOpacity>
-      </View>
-
-      <View>
-        {selectedPeriod === "daily" && (
-          <LineChart
-            data={{
-              labels: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
-              datasets: [
-                {
-                  data: dailyData.length === 7 ? dailyData : Array(7).fill(0),
-                },
-              ],
-            }}
-            width={isFinite(screenWidth - 30) ? screenWidth - 30 : 300}
-            height={220}
-            yAxisSuffix="ml"
-            chartConfig={{
-              backgroundColor: "#4e4e4e",
-              backgroundGradientFrom: "#2b2b2b",
-              backgroundGradientTo: "#2b2b2b",
-              color: (opacity = 1) => `rgba(255, 99, 99, ${opacity})`,
-              decimalPlaces: 0,
-              labelColor: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
-              fillShadowGradient: "#ff0000",
-              fillShadowGradientOpacity: 0.8,
-              propsForDots: {
-                r: "4",
-                strokeWidth: "4",
-                stroke: "#ff0000",
-              },
-            }}
-            bezier
-            style={{ marginVertical: 20, borderRadius: 10 }}
+    <ScrollView style={styles.container}>
+      <View style={{ alignItems: "center" }}>
+        <Text style={styles.header}>{user?.name}'s sip log</Text>
+        <View style={styles.dropdownContainer}>
+          <DropDown
+            selectedValue={selectedPeriod}
+            options={["daily", "monthly", "yearly"]}
+            onSelect={(val) =>
+              setSelectedPeriod(val as "daily" | "monthly" | "yearly")
+            }
           />
-        )}
-      </View>
+        </View>
 
-      <View>
-        {selectedPeriod === "monthly" && (
-          <LineChart
-            data={{
-              labels: [
-                "Jan",
-                "Feb",
-                "Mar",
-                "Apr",
-                "May",
-                "Jun",
-                "Jul",
-                "Aug",
-                "Sep",
-                "Oct",
-                "Nov",
-                "Dec",
-              ],
-              datasets: [
-                {
-                  data:
-                    monthlyData.length === 12 ? monthlyData : Array(12).fill(0),
-                },
-              ],
-            }}
-            width={isFinite(screenWidth - 30) ? screenWidth - 30 : 300}
-            height={220}
-            yAxisSuffix="ml"
-            chartConfig={{
-              backgroundColor: "#202020",
-              backgroundGradientFrom: "#2b2b2b",
-              backgroundGradientTo: "#2b2b2b",
-              decimalPlaces: 0,
-              color: (opacity = 1) => `rgba(255, 99, 99, ${opacity})`,
-              labelColor: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
-              propsForDots: {
-                r: "4",
-                strokeWidth: "4",
-                stroke: "#ff0000",
-              },
-              fillShadowGradient: "#ff0000",
-              fillShadowGradientOpacity: 0.8,
-            }}
-            bezier
-            style={{ marginVertical: 20, borderRadius: 10 }}
-          />
-        )}
-      </View>
+        <View style={styles.typeButtonRow}>
+          {["original", "zero"].map((type) => {
+            const active = selectedType === type;
+            return (
+              <TouchableOpacity
+                onPress={() => setSelectedType(type)}
+                style={[
+                  styles.typeButton,
+                  selectedType === type && styles.typeButtonActive,
+                ]}
+                key={type}
+              >
+                <Text
+                  style={
+                    active ? styles.typeButtonTextActive : styles.typeButtonText
+                  }
+                >
+                  {type.toUpperCase()}
+                </Text>
+              </TouchableOpacity>
+            );
+          })}
+        </View>
 
-      <View>
-        {selectedPeriod === "yearly" && (
-          <LineChart
-            data={{
-              labels: yearLabels,
-              datasets: [
-                {
-                  data: yearlyData.length === 6 ? yearlyData : Array(6).fill(0),
+        <View style={{ position: "relative" }}>
+          {selectedPeriod === "daily" && (
+            <LineChart
+              data={{
+                labels: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
+                datasets: [
+                  {
+                    data: dailyData.length === 7 ? dailyData : Array(7).fill(0),
+                  },
+                ],
+              }}
+              width={screenWidth - 30}
+              height={220}
+              yAxisSuffix="ml"
+              chartConfig={{
+                backgroundColor: "#4e4e4e",
+                backgroundGradientFrom: "#2b2b2b",
+                backgroundGradientTo: "#2b2b2b",
+                color: (opacity = 1) => `rgba(255, 99, 99, ${opacity})`,
+                decimalPlaces: 0,
+                labelColor: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
+                fillShadowGradient: "#ff0000",
+                fillShadowGradientOpacity: 0.8,
+                propsForDots: {
+                  r: "4",
+                  strokeWidth: "4",
+                  stroke: "#ff0000",
                 },
-              ],
-            }}
-            width={isFinite(screenWidth - 30) ? screenWidth - 30 : 300}
-            height={220}
-            yAxisSuffix="ml"
-            chartConfig={{
-              backgroundColor: "#202020",
-              backgroundGradientFrom: "#2b2b2b",
-              backgroundGradientTo: "#2b2b2b",
-              decimalPlaces: 0,
-              color: (opacity = 1) => `rgba(255, 99, 99, ${opacity})`,
-              labelColor: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
-              propsForDots: {
-                r: "4",
-                strokeWidth: "4",
-                stroke: "#ff0000",
-              },
-              fillShadowGradient: "#ff0000",
-              fillShadowGradientOpacity: 0.8,
-            }}
-            bezier
-            style={{ marginVertical: 20, borderRadius: 10 }}
-          />
-        )}
+              }}
+              bezier
+              style={{ marginVertical: 20, borderRadius: 10 }}
+              onDataPointClick={({ value, x, y }) => {
+                setTooltipPos({ x, y, value, visible: true });
+              }}
+              decorator={() => {
+                return tooltipPos.visible ? (
+                  <View
+                    style={{
+                      position: "absolute",
+                      top: tooltipPos.y - 40,
+                      left: tooltipPos.x - 30,
+                      backgroundColor: "#fff",
+                      paddingHorizontal: 8,
+                      paddingVertical: 4,
+                      borderRadius: 6,
+                      borderWidth: 1,
+                      borderColor: "#ccc",
+                    }}
+                  >
+                    <Text style={{ fontSize: 12, fontWeight: "bold" }}>
+                      {tooltipPos.value}ml
+                    </Text>
+                  </View>
+                ) : null;
+              }}
+            />
+          )}
+        </View>
+
+        <View>
+          {selectedPeriod === "monthly" && (
+            <LineChart
+              data={{
+                labels: [
+                  "Jan",
+                  "Feb",
+                  "Mar",
+                  "Apr",
+                  "May",
+                  "Jun",
+                  "Jul",
+                  "Aug",
+                  "Sep",
+                  "Oct",
+                  "Nov",
+                  "Dec",
+                ],
+                datasets: [
+                  {
+                    data:
+                      monthlyData.length === 12
+                        ? monthlyData
+                        : Array(12).fill(0),
+                  },
+                ],
+              }}
+              width={screenWidth - 30}
+              height={220}
+              yAxisSuffix="ml"
+              chartConfig={{
+                backgroundColor: "#202020",
+                backgroundGradientFrom: "#2b2b2b",
+                backgroundGradientTo: "#2b2b2b",
+                decimalPlaces: 0,
+                color: (opacity = 1) => `rgba(255, 99, 99, ${opacity})`,
+                labelColor: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
+                propsForDots: {
+                  r: "4",
+                  strokeWidth: "2",
+                  stroke: "#ff0000",
+                },
+                fillShadowGradient: "#ff0000",
+                fillShadowGradientOpacity: 0.8,
+              }}
+              bezier
+              style={{ marginVertical: 20, borderRadius: 10 }}
+              onDataPointClick={({ value, x, y }) => {
+                setTooltipPos({ x, y, value, visible: true });
+              }}
+              decorator={() => {
+                return tooltipPos.visible ? (
+                  <View
+                    style={{
+                      position: "absolute",
+                      top: tooltipPos.y - 40,
+                      left: tooltipPos.x - 30,
+                      backgroundColor: "#fff",
+                      paddingHorizontal: 8,
+                      paddingVertical: 4,
+                      borderRadius: 6,
+                      borderWidth: 1,
+                      borderColor: "#ccc",
+                    }}
+                  >
+                    <Text style={{ fontSize: 12, fontWeight: "bold" }}>
+                      {tooltipPos.value}ml
+                    </Text>
+                  </View>
+                ) : null;
+              }}
+            />
+          )}
+        </View>
+
+        <View>
+          {selectedPeriod === "yearly" && (
+            <LineChart
+              data={{
+                labels: yearLabels,
+                datasets: [
+                  {
+                    data:
+                      yearlyData.length === 6 ? yearlyData : Array(6).fill(0),
+                  },
+                ],
+              }}
+              width={screenWidth - 30}
+              height={220}
+              yAxisSuffix="ml"
+              chartConfig={{
+                backgroundColor: "#202020",
+                backgroundGradientFrom: "#2b2b2b",
+                backgroundGradientTo: "#2b2b2b",
+                decimalPlaces: 0,
+                color: (opacity = 1) => `rgba(255, 99, 99, ${opacity})`,
+                labelColor: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
+                propsForDots: {
+                  r: "4",
+                  strokeWidth: "4",
+                  stroke: "#ff0000",
+                },
+                fillShadowGradient: "#ff0000",
+                fillShadowGradientOpacity: 0.8,
+              }}
+              bezier
+              style={{ marginVertical: 20, borderRadius: 10 }}
+              onDataPointClick={({ value, x, y }) => {
+                setTooltipPos({ x, y, value, visible: true });
+              }}
+              decorator={() => {
+                return tooltipPos.visible ? (
+                  <View
+                    style={{
+                      position: "absolute",
+                      top: tooltipPos.y - 40,
+                      left: tooltipPos.x - 30,
+                      backgroundColor: "#fff",
+                      paddingHorizontal: 8,
+                      paddingVertical: 4,
+                      borderRadius: 6,
+                      borderWidth: 1,
+                      borderColor: "#ccc",
+                    }}
+                  >
+                    <Text style={{ fontSize: 12, fontWeight: "bold" }}>
+                      {tooltipPos.value}ml
+                    </Text>
+                  </View>
+                ) : null;
+              }}
+            />
+          )}
+        </View>
+        <View style={styles.card}>
+          <Text style={styles.cardTitle}>Health Report</Text>
+          <Text style={styles.reportText}>{generateHealthReport()}</Text>
+        </View>
       </View>
-      <View>
-        <Text style={{ fontFamily: "Jersey15_400Regular" }}>Health Report</Text>
-        <Text style={{ fontFamily: "Jersey15_400Regular" }}>
-          {generateHealthReport()}
-        </Text>
-      </View>
-    </View>
+    </ScrollView>
   );
 };
 
 export default siplog;
+
+const styles = StyleSheet.create({
+  container: {
+    padding: 20,
+    backgroundColor: "#fff",
+    flex: 1,
+  },
+  header: {
+    fontSize: 40,
+    fontWeight: "bold",
+    marginBottom: 16,
+    color: "#141414",
+    fontFamily: "Jersey15_400Regular",
+  },
+  dropdownContainer: {
+    width: "80%",
+    marginBottom: 15,
+  },
+  typeButtonRow: {
+    flexDirection: "row",
+    justifyContent: "center",
+    width: "80%",
+    marginBottom: 20,
+    gap: 20,
+  },
+  typeButton: {
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    borderRadius: 5,
+    borderColor: "#ff2727",
+    borderWidth: 1,
+  },
+  typeButtonActive: {
+    backgroundColor: "#ff2727",
+  },
+  typeButtonText: {
+    color: "#141414",
+    fontFamily: "Jersey15_400Regular",
+    fontSize: 18,
+  },
+  typeButtonTextActive: {
+    color: "#fff",
+    fontFamily: "Jersey15_400Regular",
+    fontSize: 18,
+  },
+  card: {
+    backgroundColor: "#2e2e2e",
+    borderRadius: 12,
+    padding: 15,
+    marginBottom: 20,
+  },
+  cardTitle: {
+    color: "#fff",
+    fontSize: 20,
+    fontFamily: "Jersey15_400Regular",
+  },
+  reportText: {
+    color: "#fff",
+    fontSize: 16,
+    fontFamily: "Jersey15_400Regular",
+    lineHeight: 20,
+  },
+  divider: {
+    height: 1,
+    backgroundColor: "#ccc",
+    width: "100%",
+    marginVertical: 12,
+  },
+});
