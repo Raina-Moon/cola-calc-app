@@ -10,7 +10,10 @@ import {
 } from "react-native";
 import { useAuthStore } from "../store/authStore";
 
-const SideBar = () => {
+interface Props {
+  onClose: () => void;
+}
+const SideBar = ({ onClose }: Props) => {
   const [selected, setSelected] = useState("home");
   const [openModal, setOpenModal] = useState(false);
   const router = useRouter();
@@ -24,6 +27,7 @@ const SideBar = () => {
       setOpenModal(true);
     } else {
       router.replace(`/${item}` as `/home` | `/siplog` | `/settings`);
+      onClose();
     }
   };
 
@@ -47,10 +51,11 @@ const SideBar = () => {
             color: "#fff",
             fontSize: 20,
             fontFamily: "Jersey15_400Regular",
+            marginTop: 80,
           }}
         >
           Hi!
-          <Text style={{ textDecorationLine: "underline" }}>{userName}</Text>
+          <Text style={{ textDecorationLine: "underline" }}> {userName}</Text>
         </Text>
       </TouchableOpacity>
       {itemList.map((item) => (
@@ -60,7 +65,7 @@ const SideBar = () => {
             style={{
               color: "#fff",
               fontSize: 18,
-              marginTop: 10,
+              marginTop: 40,
               fontFamily: "Jersey15_400Regular",
             }}
           >
