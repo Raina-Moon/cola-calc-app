@@ -49,7 +49,7 @@ const SideBar = ({ onClose }: Props) => {
         <Text
           style={{
             color: "#fff",
-            fontSize: 20,
+            fontSize: 26,
             fontFamily: "Jersey15_400Regular",
             marginTop: 80,
           }}
