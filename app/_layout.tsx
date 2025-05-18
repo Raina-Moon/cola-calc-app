@@ -3,6 +3,7 @@ import { useGlobalLoadingStore } from "./store/useGlobalLoadingStore ";
 import { ActivityIndicator, View } from "react-native";
 import { useEffect, useState } from "react";
 import { useAuthStore } from "./store/authStore";
+import { useFonts as useJersey, Jersey15_400Regular } from "@expo-google-fonts/jersey-15";
 
 const initializingUseAuth = () => {
   const [ready, setReady] = useState(false);
@@ -45,9 +46,14 @@ const GlobalLoading = () => {
     </View>
   );
 };
+
 export default function RootLayout() {
   const isReady = initializingUseAuth();
-  if (!isReady) {
+
+  const [jerseyLoaded] = useJersey({
+    Jersey15_400Regular
+  })
+  if (!isReady || !jerseyLoaded) {
     return (
       <View
         style={{

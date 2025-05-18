@@ -29,6 +29,7 @@ const notificationsList = () => {
             marginVertical: 20,
             fontSize: 18,
             color: "#141414",
+            fontFamily: "Jersey15_400Regular",
           }}
         >
           No notifications yet!
@@ -55,7 +56,9 @@ const notificationsList = () => {
                 borderRadius: 5,
               }}
             >
-              <Text>{notification.message}</Text>
+              <Text style={{ fontFamily: "Jersey15_400Regular" }}>
+                {notification.message}
+              </Text>
             </View>
           </TouchableOpacity>
         ))

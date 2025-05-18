@@ -37,7 +37,7 @@ const SideBar = () => {
   return (
     <View>
       <TouchableOpacity onPress={() => router.replace("/profile")}>
-        <Text style={{ color: "#fff", fontSize: 20 }}>
+        <Text style={{ color: "#fff", fontSize: 20,fontFamily:"Jersey15_400Regular" }}>
           Hi!
           <Text style={{ textDecorationLine: "underline" }}>{userName}</Text>
         </Text>
@@ -46,7 +46,7 @@ const SideBar = () => {
         <View key={item.id}>
           <Text
             onPress={() => handleSelect(item.id)}
-            style={{ color: "#fff", fontSize: 18, marginTop: 10 }}
+            style={{ color: "#fff", fontSize: 18, marginTop: 10 , fontFamily:"Jersey15_400Regular"}}
           >
             {item.name}
           </Text>

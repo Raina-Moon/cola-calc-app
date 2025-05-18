@@ -1,6 +1,6 @@
 import React, { useEffect, useRef } from "react";
 import { ActivityIndicator, Animated, StyleSheet, Text } from "react-native";
-import { Image, View } from "react-native";
+import { View } from "react-native";
 
 const Loading = () => {
   const floatAnim = useRef(new Animated.Value(0)).current;
@@ -50,6 +50,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     marginTop: 10,
     color: "#202020",
+    fontFamily:"Jersey15_400Regular",
   },
   image: {
     width: 100,

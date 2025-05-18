@@ -23,7 +23,9 @@ module.exports = {
       output: "static",
       favicon: "./assets/images/sipsense.png",
     },
-    plugins: [],
+    plugins: [
+      "expo-font"
+    ],
     experiments: {
       typedRoutes: true,
     },
