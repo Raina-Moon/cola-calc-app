@@ -1,4 +1,4 @@
-import { Stack, useRouter } from "expo-router";
+import { Stack, usePathname } from "expo-router";
 import { useGlobalLoadingStore } from "./store/useGlobalLoadingStore ";
 import {
   ActivityIndicator,
@@ -65,9 +65,12 @@ const { width } = Dimensions.get("window");
 export default function RootLayout() {
   const [sideBarVisible, setSideBarVisible] = useState(false);
   const slideAnim = new Animated.Value(-300);
-  const rotuer = useRouter();
+  const pathname = usePathname();
 
   const isReady = initializingUseAuth();
+
+  const hideTopBarRoutes = ["/login", "/signup"];
+  const showTopBar = !hideTopBarRoutes.includes(pathname);
 
   useEffect(() => {
     if (sideBarVisible) {
@@ -106,9 +109,11 @@ export default function RootLayout() {
   return (
     <>
       <View style={{ flex: 1, backgroundColor: "#fff" }}>
-        <SafeAreaView edges={["top"]}>
-          <TopBar onMenuPress={() => setSideBarVisible((prev) => !prev)} />
-        </SafeAreaView>
+        {showTopBar && (
+          <SafeAreaView edges={["top"]}>
+            <TopBar onMenuPress={() => setSideBarVisible((prev) => !prev)} />
+          </SafeAreaView>
+        )}
         <View style={{ flex: 1 }}>
           <Stack />
         </View>
