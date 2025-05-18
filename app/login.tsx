@@ -108,7 +108,7 @@ export default function loginPage() {
             <Text style={styles.buttonText}>Login</Text>
           </TouchableOpacity>
 
-          {error ? <Text style={{ color: "red" }}>{error}</Text> : null}
+          {error ? <Text style={{ color: "red",fontFamily:"Jersey15_400Regular" }}>{error}</Text> : null}
 
           <TouchableOpacity onPress={() => router.replace("/signup")}>
             <Text style={styles.linkText}>Don't have an account? Sign up</Text>
