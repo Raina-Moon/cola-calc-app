@@ -1,5 +1,11 @@
 import React, { useState } from "react";
-import { Text, TextInput, TouchableOpacity, View } from "react-native";
+import {
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
+} from "react-native";
 import { useAuthStore } from "./store/authStore";
 import { profilePatch } from "./api/auth";
 
@@ -35,12 +41,12 @@ const profile = () => {
   };
 
   return (
-    <View>
-      <Text>Profile</Text>
-      <Text style={{ fontSize: 18, marginBottom: 10 }}>Name: {user?.name}</Text>
+    <View style={styles.container}>
+      <Text style={styles.title}>Profile</Text>
+      <Text style={styles.label}>Name: {user?.name}</Text>
       {update ? (
         <>
-          <Text>Weight : </Text>
+          <Text style={styles.label}>Weight : </Text>
           <TextInput
             keyboardType="numeric"
             value={String(weight)}
@@ -48,19 +54,21 @@ const profile = () => {
               setWeight(Number(val));
               validateWeight(val);
             }}
+            style={styles.input}
           />
-          {error ? <Text>{error}</Text> : null}
-          <TouchableOpacity onPress={handleUpdate}>
-            <Text>Save</Text>
+          {error ? <Text style={styles.errorText}>{error}</Text> : null}
+          <TouchableOpacity onPress={handleUpdate} style={styles.button}>
+            <Text style={styles.buttonText}>Save</Text>
           </TouchableOpacity>
         </>
       ) : (
         <>
-          <Text style={{ fontSize: 18, marginBottom: 10 }}>
-            Weight: {user?.weight}
-          </Text>
-          <TouchableOpacity onPress={() => setUpdate(true)}>
-            <Text>Edit Weight</Text>
+          <Text style={styles.label}>Weight: {user?.weight}</Text>
+          <TouchableOpacity
+            onPress={() => setUpdate(true)}
+            style={styles.button}
+          >
+            <Text style={styles.buttonText}>Edit Weight</Text>
           </TouchableOpacity>
         </>
       )}
@@ -69,3 +77,55 @@ const profile = () => {
 };
 
 export default profile;
+
+const styles = StyleSheet.create({
+  container: {
+    padding: 24,
+    backgroundColor: "#ff4747",
+    flex: 1,
+    alignItems: "center",
+    paddingTop: 50,
+  },
+  title: {
+    fontSize: 40,
+    fontWeight: "bold",
+    marginBottom: 16,
+    color: "#ffffff",
+    fontFamily: "Jersey15_400Regular",
+  },
+  label: {
+    fontSize: 30,
+    marginBottom: 10,
+    color: "#ffffff",
+    fontFamily: "Jersey15_400Regular",
+  },
+  button: {
+    backgroundColor: "#fff",
+    marginTop: 30,
+    paddingVertical: 10,
+    paddingHorizontal: 30,
+    borderRadius: 10,
+  },
+  buttonText: {
+    fontSize: 20,
+    color: "#141414",
+    fontFamily: "Jersey15_400Regular",
+  },
+  input: {
+    borderWidth: 1,
+    borderColor: "#fff",
+    padding: 10,
+    marginBottom: 20,
+    width: "50%",
+    borderRadius: 5,
+    backgroundColor: "#fff",
+    fontFamily: "Jersey15_400Regular",
+    fontSize: 24,
+  },
+  errorText: {
+    color: "#fff",
+    fontSize: 22,
+    fontFamily: "Jersey15_400Regular",
+    marginTop: 10,
+  },
+});
