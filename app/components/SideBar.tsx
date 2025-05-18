@@ -46,7 +46,12 @@ const SideBar = ({ onClose }: Props) => {
   return (
     <View style={{ flex: 1 }}>
       <View style={{ flex: 1 }}>
-        <TouchableOpacity onPress={() => router.replace("/profile")}>
+        <TouchableOpacity
+          onPress={() => {
+            router.replace("/profile");
+            onClose();
+          }}
+        >
           <Text
             style={{
               color: "#fff",
