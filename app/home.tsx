@@ -15,6 +15,7 @@ import { getDailyCola, postCola } from "./api/cola";
 import { Ionicons } from "@expo/vector-icons";
 import SideBar from "./components/SideBar";
 import { useRouter } from "expo-router";
+import ChatBot from "./components/ChatBot";
 
 type FilterType = "original" | "zero";
 const { width } = Dimensions.get("window");
@@ -152,8 +153,7 @@ const home = () => {
         ))}
       </View>
 
-      <Image source={require(`../assets/images/colafairy.png`)} />
-
+      <ChatBot sum={sum} filter={filter}/>
       {sideBarVisible && (
         <TouchableOpacity
           activeOpacity={1}
