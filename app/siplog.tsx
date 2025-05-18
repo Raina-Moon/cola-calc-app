@@ -144,37 +144,58 @@ const siplog = () => {
     };
 
     const riskMsgZero = (value: number, label: string) => {
-      if (value > 15) {
-        return `⚠️ Your ${label} intake of zero cola is quite high. While it contains no sugar, excessive intake of artificial sweeteners may impact kidney function or gut health.`;
-      } else if (value > 10) {
-        return `🟠 Your ${label} intake is relatively high. Watch out for potential effects on insulin sensitivity and appetite regulation.`;
-      } else if (value > 5) {
-        return `🟢 Your ${label} intake is within a safe range. Still, moderation is key with zero-sugar beverages.`;
-      } else {
-        return `💚 Your ${label} intake is low. Good job staying balanced!`;
-      }
+      if (value > 15)
+        return `⚠️ ${label} intake is high. Watch out for sweeteners.`;
+      if (value > 10) return `🟠 ${label} intake is a bit high.`;
+      if (value > 5) return `🟢 ${label} intake is okay.`;
+      return `💚 ${label} intake is low.`;
     };
 
     const riskMsg = selectedType === "original" ? riskMsgOriginal : riskMsgZero;
 
-    return `
-👤 User: ${user.name} (${user.weight}kg)
+    return (
+      <View style={styles.card}>
 
-🥤 Cola Consumption Health Report (Type: ${selectedType.toUpperCase()})
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-📅 Last 7 Days: ${totalIntake.daily}ml  
-👉 ${riskMsg(intakePerKg.daily, "daily")}
-🧪 Health Score: ${dailyScore}/100
+        {selectedPeriod === "daily" && (
+          <>
+            <Text style={styles.reportText}>
+              📅 Last 7 Days: {totalIntake.daily}ml
+            </Text>
+            <Text style={styles.reportText}>
+              👉 {riskMsg(intakePerKg.daily, "Daily")}
+            </Text>
+            <Text style={styles.reportText}>🧪 Score: {dailyScore}/100</Text>
+            <View style={styles.divider} />
+          </>
+        )}
 
-📅 Last 12 Months: ${totalIntake.monthly}ml  
-👉 ${riskMsg(intakePerKg.monthly, "monthly")}
-🧪 Health Score: ${monthlyScore}/100
+        {selectedPeriod === "monthly" && (
+          <>
+            <Text style={styles.reportText}>
+              📅 Last 12 Months: {totalIntake.monthly}ml
+            </Text>
+            <Text style={styles.reportText}>
+              👉 {riskMsg(intakePerKg.monthly, "Monthly")}
+            </Text>
+            <Text style={styles.reportText}>🧪 Score: {monthlyScore}/100</Text>
+            <View style={styles.divider} />
+          </>
+        )}
 
-📅 Last 6 Years: ${totalIntake.yearly}ml  
-👉 ${riskMsg(intakePerKg.yearly, "yearly")}
-🧪 Health Score: ${yearlyScore}/100
-
-`;
+        {selectedPeriod === "yearly" && (
+          <>
+            <Text style={styles.reportText}>
+              📅 Last 6 Years: {totalIntake.yearly}ml
+            </Text>
+            <Text style={styles.reportText}>
+              👉 {riskMsg(intakePerKg.yearly, "Yearly")}
+            </Text>
+            <Text style={styles.reportText}>🧪 Score: {yearlyScore}/100</Text>
+            <View style={styles.divider} />
+          </>
+        )}
+      </View>
+    );
   };
 
   useEffect(() => {
@@ -226,6 +247,7 @@ const siplog = () => {
                   styles.typeButton,
                   selectedType === type && styles.typeButtonActive,
                 ]}
+                key={type}
               >
                 <Text
                   style={
@@ -337,7 +359,7 @@ const siplog = () => {
                 labelColor: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
                 propsForDots: {
                   r: "4",
-                  strokeWidth: "4",
+                  strokeWidth: "2",
                   stroke: "#ff0000",
                 },
                 fillShadowGradient: "#ff0000",
@@ -431,8 +453,6 @@ const siplog = () => {
               }}
             />
           )}
-
-          
         </View>
         <View style={styles.card}>
           <Text style={styles.cardTitle}>Health Report</Text>
@@ -505,5 +525,11 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontFamily: "Jersey15_400Regular",
     lineHeight: 20,
+  },
+  divider: {
+    height: 1,
+    backgroundColor: "#ccc",
+    width: "100%",
+    marginVertical: 12,
   },
 });
