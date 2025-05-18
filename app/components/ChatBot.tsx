@@ -197,5 +197,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 12,
     borderRadius: 12,
     marginVertical: 4,
+    backgroundColor: "#f0f0f0",
+    maxWidth: "80%",
   },
 });
