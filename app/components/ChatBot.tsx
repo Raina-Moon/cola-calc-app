@@ -11,14 +11,17 @@ import {
   View,
 } from "react-native";
 import { getDailyCola } from "../api/cola";
-import { transform } from "@babel/core";
 
 interface Props {
   sum: number;
   filter: "original" | "zero";
 }
+
 const ChatBot = ({ sum, filter }: Props) => {
   const [dailyData, setDailyData] = useState<number[]>([]);
+  const [typedMsg, setTypedMsg] = useState("");
+  const [isFirst, setIsFirst] = useState(true);
+
   const user = useAuthStore((state) => state.user);
   const weight = user?.weight;
   const max = caculateMaxCola(
@@ -50,21 +53,6 @@ const ChatBot = ({ sum, filter }: Props) => {
     fetchWeekly();
   }, [filter]);
 
-  useEffect(() => {
-    Animated.parallel([
-      Animated.timing(bubbleAnim, {
-        toValue: 0,
-        duration: 600,
-        useNativeDriver: true,
-      }),
-      Animated.timing(opacityAnim, {
-        toValue: 1,
-        duration: 600,
-        useNativeDriver: true,
-      }),
-    ]).start();
-  }, []);
-
   const { message, option, setStep } = useChatFlow({
     sum,
     max: Math.floor(max),
@@ -76,6 +64,40 @@ const ChatBot = ({ sum, filter }: Props) => {
       ? "\n⚠️ You've exceeded your limit 3 or more times this week!"
       : "",
   });
+
+  useEffect(() => {
+    setTypedMsg("");
+    const isStart = message.startsWith("Hey there!");
+    setIsFirst(isStart);
+
+    if (isStart) {
+      Animated.parallel([
+        Animated.timing(bubbleAnim, {
+          toValue: 0,
+          duration: 600,
+          useNativeDriver: true,
+        }),
+        Animated.timing(opacityAnim, {
+          toValue: 1,
+          duration: 600,
+          useNativeDriver: true,
+        }),
+      ]).start();
+      setTypedMsg(message);
+    } else {
+      const interval = setInterval(() => {
+        setTypedMsg((prev) => {
+          if (prev.length < message.length) {
+            return prev + message.charAt(prev.length);
+          } else {
+            clearInterval(interval);
+            return prev;
+          }
+        });
+      }, 30);
+      return () => clearInterval(interval);
+    }
+  }, [message]);
 
   const getOptionColor = (idx: number) => {
     const colors = ["#fe4a4a", "#fe7676", "#ff9f9f"];
@@ -90,17 +112,29 @@ const ChatBot = ({ sum, filter }: Props) => {
           style={styles.fairy}
         />
         <Animated.View
-          style={[
-            styles.bubbleLeft,
-            { transform: [{ translateY: bubbleAnim }], opacity: opacityAnim },
-          ]}
+          style={
+            isFirst
+              ? [
+                  styles.bubbleLeft,
+                  {
+                    transform: [{ translateY: bubbleAnim }],
+                    opacity: opacityAnim,
+                  },
+                ]
+              : styles.bubbleLeft
+          }
         >
-          <Text style={styles.message}>{message}</Text>
+          <Text style={styles.message}>{typedMsg}</Text>
         </Animated.View>
       </View>
       <View style={styles.chatRowUser}>
         {option.map((item, idx) => (
-          <Animated.View style={[{ transform: [{ translateY: bubbleAnim }], opacity: opacityAnim }]} key={idx}>
+          <Animated.View
+            style={[
+              { transform: [{ translateY: bubbleAnim }], opacity: opacityAnim },
+            ]}
+            key={idx}
+          >
             <TouchableOpacity
               onPress={() => setStep(item.next)}
               style={[
