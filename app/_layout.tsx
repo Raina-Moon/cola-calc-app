@@ -69,7 +69,7 @@ export default function RootLayout() {
 
   const isReady = initializingUseAuth();
 
-  const hideTopBarRoutes = ["/login", "/signup"];
+  const hideTopBarRoutes = ["/login", "/signup","/index"];
   const showTopBar = !hideTopBarRoutes.includes(pathname);
 
   useEffect(() => {
