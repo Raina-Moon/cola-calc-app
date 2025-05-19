@@ -1,7 +1,7 @@
 module.exports = {
   expo: {
-    name: "cola-calc-app",
-    slug: "cola-calc-app",
+    name: "SipSense",
+    slug: "Sipsense",
     version: "1.0.0",
     orientation: "portrait",
     icon: "./assets/images/sipsense.png",
