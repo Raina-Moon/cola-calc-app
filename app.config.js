@@ -5,13 +5,15 @@ module.exports = {
     version: "1.0.0",
     orientation: "portrait",
     icon: "./assets/images/sipsense.png",
-    scheme: "colacalcapp",
+    scheme: "Sipsense",
     userInterfaceStyle: "automatic",
     newArchEnabled: true,
     ios: {
       supportsTablet: true,
     },
     android: {
+      package: "com.mds64.sipsense",
+      versionCode: 4,
       adaptiveIcon: {
         foregroundImage: "./assets/images/sipsense.png",
         backgroundColor: "#ffffff",
@@ -23,14 +25,15 @@ module.exports = {
       output: "static",
       favicon: "./assets/images/sipsense.png",
     },
-    plugins: [
-      "expo-font"
-    ],
+    plugins: ["expo-font"],
     experiments: {
       typedRoutes: true,
     },
     extra: {
       API_URL: "http://54.161.66.184:5000/api",
+      eas: {
+        projectId: "2ab2104b-7930-406d-bd1f-b171cfdb4633",
+      },
     },
   },
 };
