@@ -114,8 +114,8 @@ export default function RootLayout() {
             <TopBar onMenuPress={() => setSideBarVisible((prev) => !prev)} />
           </SafeAreaView>
         )}
-        <View style={{ flex: 1 }}>
-          <Stack />
+        <View style={{ flex: 1,marginTop:20 }}>
+          <Stack screenOptions={{headerShown:false}}/>
         </View>
 
         {sideBarVisible && (
