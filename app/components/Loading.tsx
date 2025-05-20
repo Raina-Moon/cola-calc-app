@@ -42,7 +42,7 @@ export default Loading;
 
 const styles = StyleSheet.create({
   container: {
-    marginTop: 60,
+    flex: 1,
     justifyContent: "center",
     alignItems: "center",
     backgroundColor: "#fff",
@@ -51,7 +51,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     marginTop: 10,
     color: "#202020",
-    fontFamily:"Jersey15_400Regular",
+    fontFamily: "Jersey15_400Regular",
   },
   image: {
     width: 100,
