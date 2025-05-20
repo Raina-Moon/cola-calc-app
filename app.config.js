@@ -13,7 +13,7 @@ module.exports = {
     },
     android: {
       package: "com.mds64.sipsense",
-      versionCode: 4,
+      versionCode: 5,
       adaptiveIcon: {
         foregroundImage: "./assets/images/sipsense.png",
         backgroundColor: "#ffffff",
