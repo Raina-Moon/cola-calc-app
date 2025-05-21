@@ -30,7 +30,7 @@ module.exports = {
       typedRoutes: true,
     },
     extra: {
-      API_URL: "http://54.161.66.184:5000/api",
+      API_URL: "https://sipsense.raina-moon.com/api",
       eas: {
         projectId: "2ab2104b-7930-406d-bd1f-b171cfdb4633",
       },
