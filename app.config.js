@@ -4,7 +4,7 @@ module.exports = {
     slug: "Sipsense",
     version: "1.0.0",
     orientation: "portrait",
-    icon: "./assets/images/sipsense.png",
+    icon: "./assets/images/sipsenselogo.png",
     scheme: "Sipsense",
     userInterfaceStyle: "automatic",
     newArchEnabled: true,
