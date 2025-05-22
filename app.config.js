@@ -8,8 +8,13 @@ module.exports = {
     scheme: "Sipsense",
     userInterfaceStyle: "automatic",
     newArchEnabled: true,
+    owner:"raina_moon",
     ios: {
       supportsTablet: true,
+      bundleIdentifier: "com.rainamoon.sipsense",
+      infoPlist: {
+        ITSAppUsesNonExemptEncryption: false,
+      }
     },
     android: {
       package: "com.mds64.sipsense",
