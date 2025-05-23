@@ -11,11 +11,16 @@
     "preview": {
       "distribution": "internal"
     },
-    "production": {
+    "production-ios": {
+      "autoIncrement": true
+    },
+    "production-android": {
+      "config": "app.config.js",
       "autoIncrement": true
     }
   },
   "submit": {
-    "production": {}
+    "production-ios": {},
+    "production-android": {}
   }
 }
