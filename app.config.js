@@ -4,17 +4,12 @@ module.exports = {
     slug: "Sipsense",
     version: "1.0.0",
     orientation: "portrait",
-    icon: "./assets/images/sipsenselogo.png",
+    icon: "./assets/images/sipsenselogo_fixed.png",
     scheme: "Sipsense",
     userInterfaceStyle: "automatic",
     newArchEnabled: true,
     owner:"raina_moon",
     ios: {
-      supportsTablet: true,
-      bundleIdentifier: "com.rainamoon.sipsense",
-      infoPlist: {
-        ITSAppUsesNonExemptEncryption: false,
-      }
     },
     android: {
       package: "com.mds64.sipsense",
