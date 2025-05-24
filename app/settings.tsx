@@ -62,8 +62,10 @@ const settings = () => {
           thumbColor={enabled ? "#fff" : "#ccc"}
           trackColor={{ false: "#888", true: "#4CAF50" }}
         />
+        </View>
+        <View style={styles.card}>
         <TouchableOpacity onPress={handleDelete} style={{ marginTop: 20 }}>
-          <Text>Delete My Account</Text>
+          <Text style={styles.deleteText}>Delete My Account</Text>
         </TouchableOpacity>
       </View>
     </View>
@@ -107,4 +109,9 @@ const styles = StyleSheet.create({
     color: "#141414",
     fontFamily: "Jersey15_400Regular",
   },
+  deleteText : {
+    color:"#141414",
+    fontSize:20,
+    fontFamily: "Jersey15_400Regular",
+  }
 });
