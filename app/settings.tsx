@@ -1,15 +1,19 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import React, { useEffect, useState } from "react";
-import { StyleSheet, Switch, Text, View } from "react-native";
+import { StyleSheet, Switch, Text, TouchableOpacity, View } from "react-native";
 import { useAuthStore } from "./store/authStore";
 import { toggleNotif } from "./api/notification";
 import { useGlobalLoadingStore } from "./store/useGlobalLoadingStore ";
+import { deleteUser } from "./api/auth";
+import { useRouter } from "expo-router";
 
 const settings = () => {
   const [enabled, setEnabled] = useState(true);
   const user = useAuthStore((state) => state.user);
   const updated = useAuthStore((state) => state.updateUser);
   const setLoading = useGlobalLoadingStore((state) => state.setLoading);
+
+  const router = useRouter();
 
   useEffect(() => {
     if (user) {
@@ -32,19 +36,35 @@ const settings = () => {
     }
   };
 
+  const handleDelete = async () => {
+    if (!user) return;
+    try {
+      setLoading(true);
+      await deleteUser();
+      await useAuthStore.getState().logout();
+      alert("User deleted successfully");
+      router.replace("/signup");
+    } catch (err) {
+      alert("Failed to delete user");
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <View style={styles.container}>
       <Text style={styles.header}>Settings</Text>
       <View style={styles.card}>
-      <Text style={styles.label}>
-        🔔 Enable Notification
-      </Text>
-      <Switch
-        value={enabled}
-        onValueChange={toggleSwitch}
-        thumbColor={enabled ? "#fff" : "#ccc"}
-        trackColor={{ false: "#888", true: "#4CAF50" }}
-      />
+        <Text style={styles.label}>🔔 Enable Notification</Text>
+        <Switch
+          value={enabled}
+          onValueChange={toggleSwitch}
+          thumbColor={enabled ? "#fff" : "#ccc"}
+          trackColor={{ false: "#888", true: "#4CAF50" }}
+        />
+        <TouchableOpacity onPress={handleDelete} style={{ marginTop: 20 }}>
+          <Text>Delete My Account</Text>
+        </TouchableOpacity>
       </View>
     </View>
   );
@@ -58,7 +78,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     backgroundColor: "#ff4747",
   },
-  header : {
+  header: {
     fontSize: 32,
     marginVertical: 20,
     color: "#fff",
@@ -81,10 +101,10 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
-  label : {
+  label: {
     fontSize: 18,
     marginBottom: 10,
     color: "#141414",
     fontFamily: "Jersey15_400Regular",
-  }
-})
+  },
+});
