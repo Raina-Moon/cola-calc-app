@@ -17,9 +17,6 @@ import { useGlobalLoadingStore } from "./store/useGlobalLoadingStore ";
 
 export default function loginPage() {
   const [name, setName] = useState("");
-  const [year, setYear] = useState("");
-  const [month, setMonth] = useState("");
-  const [day, setDay] = useState("");
   const [error, setError] = useState("");
 
   const router = useRouter();
@@ -27,20 +24,14 @@ export default function loginPage() {
   const setLoading = useGlobalLoadingStore((state) => state.setLoading);
 
   const handleLogin = async () => {
-    const isCompleted = name && year && month && day;
-    if (!isCompleted) return;
-
-    const birthday = `${year}-${month.padStart(2, "0")}-${day.padStart(
-      2,
-      "0"
-    )}`;
+    if (!name) return;
 
     try {
       setLoading(true);
-      await login(name, birthday);
+      await login(name);
       router.replace("/home");
     } catch (error) {
-      setError("Invalid name or birthday. Please try again.");
+      setError("Invalid name. Please try again.");
     } finally {
       setLoading(false);
     }
@@ -68,47 +59,16 @@ export default function loginPage() {
             placeholderTextColor="#888"
             style={styles.input}
           />
-          <Text style={styles.inputText}>Birthday</Text>
-          <View style={styles.birthdayContainer}>
-            <View style={styles.birthdayColumn}>
-              <Text style={styles.birthdayLabel}>Month</Text>
-              <TextInput
-                placeholder="MM"
-                onChangeText={setMonth}
-                value={month}
-                placeholderTextColor="#888"
-                keyboardType="numeric"
-                style={styles.birthdayInput}
-              />
-            </View>
-            <View style={styles.birthdayColumn}>
-              <Text style={styles.birthdayLabel}>Day</Text>
-              <TextInput
-                placeholder="DD"
-                onChangeText={setDay}
-                value={day}
-                keyboardType="numeric"
-                placeholderTextColor="#888"
-                style={styles.birthdayInput}
-              />
-            </View>
-            <View style={styles.birthdayColumn}>
-              <Text style={styles.birthdayLabel}>Year</Text>
-              <TextInput
-                placeholder="YYYY"
-                onChangeText={setYear}
-                value={year}
-                placeholderTextColor="#888"
-                keyboardType="numeric"
-                style={styles.birthdayInput}
-              />
-            </View>
-          </View>
+
           <TouchableOpacity onPress={handleLogin} style={styles.button}>
             <Text style={styles.buttonText}>Login</Text>
           </TouchableOpacity>
 
-          {error ? <Text style={{ color: "red",fontFamily:"Jersey15_400Regular" }}>{error}</Text> : null}
+          {error ? (
+            <Text style={{ color: "red", fontFamily: "Jersey15_400Regular" }}>
+              {error}
+            </Text>
+          ) : null}
 
           <TouchableOpacity onPress={() => router.replace("/signup")}>
             <Text style={styles.linkText}>Don't have an account? Sign up</Text>
@@ -134,14 +94,14 @@ const styles = StyleSheet.create({
     color: "#141414",
     textAlign: "center",
     marginBottom: 4,
-    fontFamily:"Jersey15_400Regular"
+    fontFamily: "Jersey15_400Regular",
   },
   subtitle: {
     fontSize: 14,
     color: "#555",
     textAlign: "center",
     marginBottom: 24,
-    fontFamily:"Jersey15_400Regular"
+    fontFamily: "Jersey15_400Regular",
   },
   inputText: {
     alignSelf: "flex-start",
@@ -151,7 +111,7 @@ const styles = StyleSheet.create({
     marginLeft: "10%",
     marginBottom: 8,
     marginTop: 10,
-    fontFamily:"Jersey15_400Regular"
+    fontFamily: "Jersey15_400Regular",
   },
   input: {
     width: "80%",
@@ -179,7 +139,7 @@ const styles = StyleSheet.create({
     color: "#141414",
     alignSelf: "flex-start",
     marginLeft: "5%",
-    fontFamily:"Jersey15_400Regular"
+    fontFamily: "Jersey15_400Regular",
   },
   birthdayInput: {
     width: "90%",
@@ -205,19 +165,19 @@ const styles = StyleSheet.create({
     fontWeight: "600",
     fontSize: 16,
     textAlign: "center",
-    fontFamily:"Jersey15_400Regular" 
+    fontFamily: "Jersey15_400Regular",
   },
   linkText: {
     color: "#141414",
     fontSize: 14,
     textAlign: "center",
-    fontFamily:"Jersey15_400Regular"
+    fontFamily: "Jersey15_400Regular",
   },
   errorText: {
     color: "#ff0000",
     fontSize: 12,
     marginBottom: 10,
     textAlign: "center",
-    fontFamily:"Jersey15_400Regular"
+    fontFamily: "Jersey15_400Regular",
   },
 });
