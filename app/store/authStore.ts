@@ -5,7 +5,6 @@ import API from "../api/axios";
 interface User {
   id: number;
   name: string;
-  birthday: string;
   weight: number;
   notificationEnabled: boolean;
 }
