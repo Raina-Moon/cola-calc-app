@@ -65,3 +65,14 @@ export const refreshAccessToken = async () => {
     throw new Error("Failed to refresh access token");
   }
 };
+
+export const deleteUser = async () => {
+  const user = useAuthStore.getState().user;
+  const res = await API.delete(`/user/${user?.id}`);
+
+  if (res.status !== 200) {
+    throw new Error("Failed to delete user");
+  }
+
+  return res.data;
+}
