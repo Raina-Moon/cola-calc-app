@@ -124,6 +124,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
     fontFamily: "Jersey15_400Regular",
     fontSize: 24,
+    color: "#141414 !important",
   },
   errorText: {
     color: "#fff",

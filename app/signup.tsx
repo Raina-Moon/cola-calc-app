@@ -159,7 +159,7 @@ const styles = StyleSheet.create({
     padding: 10,
     marginBottom: 10,
     backgroundColor: "#fff",
-  },
+color: "#141414 !important",  },
   errorText: {
     color: "#ff0000",
     fontSize: 9,
