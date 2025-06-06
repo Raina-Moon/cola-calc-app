@@ -17,14 +17,8 @@ import { useGlobalLoadingStore } from "./store/useGlobalLoadingStore ";
 
 export default function Signup() {
   const [name, setName] = useState("");
-  const [year, setYear] = useState("");
-  const [month, setMonth] = useState("");
-  const [day, setDay] = useState("");
   const [weight, setWeight] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
-  const [monthError, setMonthError] = useState("");
-  const [dayError, setDayError] = useState("");
-  const [yearError, setYearError] = useState("");
   const [weightError, setWeightError] = useState("");
   const [nameError, setNameError] = useState("");
 
@@ -34,37 +28,13 @@ export default function Signup() {
 
   const handleSignup = async () => {
     setErrorMessage("");
-    setMonthError("");
-    setDayError("");
-    setYearError("");
     setWeightError("");
     setNameError("");
 
     let hasError = false;
 
-    const monthNum = parseInt(month, 10);
-    const dayNum = parseInt(day, 10);
-    const yearNum = parseInt(year, 10);
+ 
     const weightNum = parseInt(weight, 10);
-
-    if (isNaN(monthNum) || monthNum < 1 || monthNum > 12) {
-      setMonthError("Please enter a valid month (1-12).");
-      hasError = true;
-    }
-
-    if (isNaN(dayNum) || dayNum < 1 || dayNum > 31) {
-      setDayError("Please enter a valid day (1-31).");
-      hasError = true;
-    }
-
-    if (
-      isNaN(yearNum) ||
-      yearNum < 1900 ||
-      yearNum > new Date().getFullYear()
-    ) {
-      setYearError("Please enter a valid year.");
-      hasError = true;
-    }
 
     if (isNaN(weightNum) || weightNum <= 0) {
       setWeightError("Please enter a valid weight.");
@@ -78,15 +48,11 @@ export default function Signup() {
 
     if (hasError) return;
 
-    const birthday = `${year}-${month.padStart(2, "0")}-${day.padStart(
-      2,
-      "0"
-    )}`;
 
     try {
       setLoading(true);
-      await register(name, birthday, Number(weight));
-      await login(name, birthday);
+      await register(name, Number(weight));
+      await login(name);
       router.replace("/home");
     } catch (error: any) {
       console.error(error);
@@ -127,74 +93,7 @@ export default function Signup() {
             ]}
           />
           {nameError ? <Text style={styles.errorText}>{nameError}</Text> : null}
-          <Text style={styles.inputText}>Birthday</Text>
-          <View style={styles.birthdayContainer}>
-            <View style={styles.birthdayColumn}>
-              <Text style={styles.birthdayLabel}>Month</Text>
-              <TextInput
-                onChangeText={(text) => {
-                  setMonth(text);
-                  setMonthError("");
-                }}
-                placeholder="MM"
-                keyboardType="numeric"
-                style={[
-                  styles.birthdayInput,
-                  monthError
-                    ? { borderColor: "#ff0000" }
-                    : { borderColor: "#141414" },
-                ]}
-                placeholderTextColor="#888"
-              />
-              {monthError ? (
-                <Text style={styles.errorText}>{monthError}</Text>
-              ) : null}
-            </View>
-
-            <View style={styles.birthdayColumn}>
-              <Text style={styles.birthdayLabel}>Day</Text>
-              <TextInput
-                onChangeText={(text) => {
-                  setDay(text);
-                  setDayError("");
-                }}
-                placeholder="DD"
-                keyboardType="numeric"
-                style={[
-                  styles.birthdayInput,
-                  dayError
-                    ? { borderColor: "#ff0000" }
-                    : { borderColor: "#141414" },
-                ]}
-                placeholderTextColor="#888"
-              />
-              {dayError ? (
-                <Text style={styles.errorText}>{dayError}</Text>
-              ) : null}
-            </View>
-
-            <View style={styles.birthdayColumn}>
-              <Text style={styles.birthdayLabel}>Year</Text>
-              <TextInput
-                onChangeText={(text) => {
-                  setYear(text);
-                  setYearError("");
-                }}
-                placeholder="YYYY"
-                keyboardType="numeric"
-                style={[
-                  styles.birthdayInput,
-                  yearError
-                    ? { borderColor: "#ff0000" }
-                    : { borderColor: "#141414" },
-                ]}
-                placeholderTextColor="#888"
-              />
-              {yearError ? (
-                <Text style={styles.errorText}>{yearError}</Text>
-              ) : null}
-            </View>
-          </View>
+          
           <Text style={styles.inputText}>Weight (Kg)</Text>
           <TextInput
             onChangeText={(text) => {
@@ -260,34 +159,6 @@ const styles = StyleSheet.create({
     padding: 10,
     marginBottom: 10,
     backgroundColor: "#fff",
-  },
-  birthdayContainer: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    width: "80%",
-  },
-  birthdayColumn: {
-    flex: 1,
-    alignItems: "center",
-  },
-  birthdayLabel: {
-    fontSize: 16,
-    marginBottom: 4,
-    fontWeight: "500",
-    color: "#141414",
-    alignSelf: "flex-start",
-    marginLeft: "5%",
-    fontFamily: "Jersey15_400Regular",
-  },
-  birthdayInput: {
-    width: "90%",
-    borderWidth: 1,
-    borderRadius: 5,
-    padding: 10,
-    backgroundColor: "#fff",
-    textAlign: "center",
-    color: "#141414",
-    fontFamily: "Jersey15_400Regular",
   },
   errorText: {
     color: "#ff0000",

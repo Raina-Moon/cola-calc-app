@@ -4,12 +4,10 @@ import API from "./axios";
 
 export const register = async (
   name: string,
-  birthday: string,
   weight: number
 ) => {
   const res = await API.post("/user", {
     name,
-    birthday,
     weight,
   });
 
@@ -20,10 +18,9 @@ export const register = async (
   return res.data;
 };
 
-export const login = async (name: string, birthday: string) => {
+export const login = async (name: string) => {
   const res = await API.post("/auth/login", {
     name,
-    birthday,
   });
 
   if (res.status !== 200) throw new Error("Failed to login");
@@ -68,3 +65,14 @@ export const refreshAccessToken = async () => {
     throw new Error("Failed to refresh access token");
   }
 };
+
+export const deleteUser = async () => {
+  const user = useAuthStore.getState().user;
+  const res = await API.delete(`/user/${user?.id}`);
+
+  if (res.status !== 200) {
+    throw new Error("Failed to delete user");
+  }
+
+  return res.data;
+}
