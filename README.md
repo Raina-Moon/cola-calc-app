@@ -124,6 +124,7 @@ npx expo start
 ## 📲 Download
 
 [App Store](https://apps.apple.com/kr/app/sipsense/id6746238876?l=en-GB)
+[Google Store](https://play.google.com/store/apps/details?id=com.mds64.sipsense&pcampaignid=web_share)
 
 ---
 
